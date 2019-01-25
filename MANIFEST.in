@@ -1,6 +1,11 @@
+include README.md
+include CHANGES.txt
+include MANIFEST.in
+include index.html
 include setup.py
 include aerocalc/*.py
 include aerocalc/*.txt
 include aerocalc/test/*
 include aerocalc/engine/*.py
 include aerocalc/engine/lycoming/*.py
+recursive-exclude **/__py_cache__ *.py*
