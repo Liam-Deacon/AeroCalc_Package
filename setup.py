@@ -16,17 +16,19 @@
 from distutils.core import setup
 
 setup(
-    name='AeroCalc',
-    version='0.13',
+    name='aerocalc',
+    version='0.13.1',
     description='Aeronautical Engineering Calculations',
     long_description='''
-AeroCalc is a pure python package that performs various aeronautical 
-engineering calculations.  Currently it provides airspeed conversions, 
-standard atmosphere calculations, static source error correction calculations 
+AeroCalc is a pure python package that performs various aeronautical
+engineering calculations.  Currently it provides airspeed conversions,
+standard atmosphere calculations, static source error correction calculations
 and unit conversions.''',
     author='Kevin Horton',
     author_email='kevin01@kilohotel.com',
-	url='http://www.kilohotel.com/python/aerocalc',
+    maintainer='Liam Deacon',
+    maintainer_email='liam.m.deacon@gmail.com',
+    url='http://www.kilohotel.com/python/aerocalc',
     packages=['aerocalc'],
     license='BSD',
     classifiers=[
@@ -38,5 +40,5 @@ and unit conversions.''',
         'Programming Language :: Python',
         'Topic :: Scientific/Engineering :: Atmospheric Science',
         ],
-    
+
     )

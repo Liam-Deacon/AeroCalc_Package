@@ -41,14 +41,14 @@ Various functions related to drag coefficients.
 """
 
 # import airspeed as A
-import cl
+from . import cl
 import math as M
 # import std_atm as SA
-import unit_conversion as U
-import constants
+from . import unit_conversion as U
+from . import constants
 
 try:
-    from default_units import *
+    from .default_units import *
 except ImportError:
     default_area_units = 'ft**2'
     default_power_units = 'hp'

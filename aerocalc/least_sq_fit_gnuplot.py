@@ -10,7 +10,7 @@ Typical use, with numpy arrays of x and y values (X_vals_array, Y_vals_array):
     data=Gnuplot.Data(X_vals_array, Y_vals_array, title='Data', with ='p -1 4')
     g.plot(data, Gnuplot.Func(func_text, title='Curve Fit to Data', with ='lines lt -1'))
 """
-from __future__ import division
+
 from scipy.optimize import leastsq
 
 def residuals1(p, y, x):

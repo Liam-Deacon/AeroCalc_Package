@@ -128,13 +128,13 @@ http://www.atmosculator.com/The%20Standard%20Atmosphere.html?
 
 """
 
-import constants
-import std_atm as SA
-import unit_conversion as U
+from . import constants
+from . import std_atm as SA
+from . import unit_conversion as U
 import math as M
 import locale as L
 try:
-    from default_units import *
+    from .default_units import *
 except ImportError:
     default_area_units = 'ft**2'
     default_power_units = 'hp'

@@ -45,11 +45,11 @@ Performs various functions with data files
 # Done: 1.
 ##############################################################################
 
-from __future__ import division
-import airspeed as A
+
+from . import airspeed as A
 import math as M
-import std_atm as SA
-import unit_conversion as U
+from . import std_atm as SA
+from . import unit_conversion as U
 import re
 import numpy as N
 import numpy.core.records as NR
