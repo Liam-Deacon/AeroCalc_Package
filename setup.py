@@ -19,7 +19,7 @@ except ImportError:
     from distutils.core import setup
 
 setup(
-    name='aerocalc',
+    name='aero-calc',
     version='0.13.1',
     description='Aeronautical Engineering Calculations',
     install_requires=['setuptools'],

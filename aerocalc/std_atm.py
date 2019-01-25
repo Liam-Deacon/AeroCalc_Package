@@ -129,7 +129,6 @@ http://www.atmosculator.com/The%20Standard%20Atmosphere.html?
 """
 
 from . import constants
-from . import std_atm as SA
 from . import unit_conversion as U
 import math as M
 import locale as L
@@ -683,7 +682,7 @@ def alt_temp2density_ratio(H, temp, alt_units=default_alt_units, temp_units=defa
 
     """
     if temp == 'std':
-        temp = SA.alt2temp(H, temp_units=temp_units)
+        temp = alt2temp(H, temp_units=temp_units)
     press_ratio = alt2press_ratio(H, alt_units=alt_units)
     temp_ratio = temp2temp_ratio(temp, temp_units=temp_units)
     density_ratio = press_ratio / temp_ratio
