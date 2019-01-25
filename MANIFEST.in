@@ -9,3 +9,7 @@ include aerocalc/test/*
 include aerocalc/engine/*.py
 include aerocalc/engine/lycoming/*.py
 recursive-exclude **/__py_cache__ *.py*
+exclude MANIFEST
+recursive-exclude build/ *
+recursive-exclude dist/ *
+recursive-exclude *egg-info/ *

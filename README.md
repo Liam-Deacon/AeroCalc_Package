@@ -58,7 +58,7 @@ epydoc --no-private -n AeroCalc -u 'http://www.kilohotel.com/python/aerocalc/' a
 To build aerocalc, simple create a distribution with the following command:
 
 ```bash
-python setup.py sdist bdist_wheel
+python setup.py sdist
 ```
 
 ## Install
