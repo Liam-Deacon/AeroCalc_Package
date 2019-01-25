@@ -81,7 +81,6 @@ Author: Kevin Horton
 E-mail: kevin01 -at- kilohotel.com
 """
 
-VERSION = '0.13.1'
+VERSION = '0.13.2'
 
 from . import airspeed, constants, default_units, std_atm, unit_conversion
-

@@ -20,7 +20,7 @@ except ImportError:
 
 setup(
     name='aero-calc',
-    version='0.13.1',
+    version='0.13.2',
     description='Aeronautical Engineering Calculations',
     install_requires=['setuptools'],
     long_description='''
