@@ -1,5 +1,21 @@
 Change Log for AeroCalc
 
+Changes for 0.13.1:
+              * All modules now only work for Python 2.7/3.4+.
+              * Added README.md
+              * Reversed order of CHANGES.txt
+
+Changes for v0.13:
+              * Added io360a and o360a modules to calculate engine power for
+              * Lycoming IO-360-A and O-360-A engines.
+              * Added interpolator module to provide two-way and three-way 
+                interpolation routines
+              * Added least_sq_fit_gnuplot module to support plotting best fit
+                lines in gnuplot.
+              * Made some changes to correct issues with python 3.0.  Very 
+                little testing has been completed on python 3, and no guarantees
+                are made.
+                
 Changes for v0.11:
               * added temperature correction to density for 
                   aerocalc.unit_conversion.avgas_conv()
@@ -32,15 +48,3 @@ Changes for v0.12:
               * Added "from __future__ import division" to all modules
               * Added data_file module, with various functions to work with data
                 files.
-
-Changes for v0.13:
-              * Added io360a and o360a modules to calculate engine power for
-              * Lycoming IO-360-A and O-360-A engines.
-              * Added interpolator module to provide two-way and three-way 
-                interpolation routines
-              * Added least_sq_fit_gnuplot module to support plotting best fit
-                lines in gnuplot.
-              * Made some changes to correct issues with python 3.0.  Very 
-                little testing has been completed on python 3, and no guarantees
-                are made.
-                
