@@ -9,10 +9,7 @@ Run this script directly to do all the tests.
 import unittest
 import sys
 
-# sys.path.append('/Users/kwh/python/')
-
-sys.path.append('../')
-import airspeed as A
+import aerocalc.airspeed as A
 
 # These tests assume that default_units.py contains the following defaults:
 # default_area_units = 'ft**2'
