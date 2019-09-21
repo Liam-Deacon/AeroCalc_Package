@@ -10,11 +10,7 @@ Run this script directly to do all the tests.
 import unittest
 import sys
 
-# sys.path.append('/Users/kwh/python/')
-
-sys.path.append('../')
-
-import cd
+from aerocalc import cd
 
 
 def RE(value, truth):
@@ -284,39 +280,8 @@ class Test_cl2lift(unittest.TestCase):
         Truth = 800
         self.failUnless(RE(Value, Truth) <= 1e-5)
 
-# create test suites
-
-main_suite = unittest.TestSuite()
-suite1 = unittest.makeSuite(Test_eas2drag)
-# suite2 = unittest.makeSuite(Test_cas2cl)
-# suite3 = unittest.makeSuite(Test_tas2cl)
-# suite4 = unittest.makeSuite(Test_cl2eas)
-# suite5 = unittest.makeSuite(Test_cl2cas)
-# suite6 = unittest.makeSuite(Test_cl2tas)
-# suite7 = unittest.makeSuite(Test_cl2lift)
-# add test suites to main test suite, so all test results are in one block
-
-main_suite.addTest(suite1)
-# main_suite.addTest(suite2)
-# main_suite.addTest(suite3)
-# main_suite.addTest(suite4)
-# main_suite.addTest(suite5)
-# main_suite.addTest(suite6)
-# main_suite.addTest(suite7)
-# main_suite.addTest(suite8)
-# main_suite.addTest(suite9)
-# main_suite.addTest(suite10)
-# main_suite.addTest(suite11)
-# main_suite.addTest(suite12)
-
-# run main test suite
-# if we run the main test suite, we get a line for each test, plus any
-# tracebacks from failures.
-
-unittest.TextTestRunner(verbosity=5).run(main_suite)
-
 # if we run unittest.main(), we get just a single line of output, plus any
 # tracebacks from failures.
-# if __name__ == '__main__':
-#     unittest.main()
+if __name__ == '__main__':
+    unittest.main(verbosity=5)
 
