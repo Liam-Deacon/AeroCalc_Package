@@ -46,7 +46,7 @@
 """
 
 try:
-    from default_units import *
+    from aerocalc.default_units import *
 except ImportError:
     default_area_units = 'ft**2'
     default_power_units = 'hp'
@@ -58,8 +58,9 @@ except ImportError:
     default_length_units = 'ft'
     default_alt_units = default_length_units
     default_avgas_units = 'lb'
+    default_vol_units = 'm**3'
 
-import unit_conversion as U
+import aerocalc.unit_conversion as unit
 
 
 def power_drop_off(sigma, pwr0, C=0.12):
@@ -85,8 +86,8 @@ def BMEP(bhp, rpm, disp, power_units=default_power_units,
 
     Rpm is revolutions per minute.
     """
-    bhp = U.power_conv(bhp, power_units, 'hp')
-    disp = U.vol_conv(disp, vol_units, 'in**3')
+    bhp = unit.power_conv(bhp, power_units, 'hp')
+    disp = unit.vol_conv(disp, vol_units, 'in**3')
     bmep = 2 * bhp * 33000. * 12 / (rpm * disp)
 
     return bmep

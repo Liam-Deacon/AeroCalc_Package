@@ -29,7 +29,7 @@ class Test_gps2tas(unittest.TestCase):
 
         Value = SS.gps2tas([178, 185, 188], [178, 82, 355])
         Truth = 183.05
-        self.failUnless(RE(Value, Truth) <= 1e-4)
+        self.assertLessEqual(RE(Value, Truth), 1e-4)
 
     def test_02(self):
 
@@ -40,15 +40,15 @@ class Test_gps2tas(unittest.TestCase):
         TAS_Truth = 183.05
         WS_Truth = 5.26
         Dir_Truth = 194.5
-        self.failUnless(RE(TAS, TAS_Truth) <= 1e-4)
-        self.failUnless(RE(WS, WS_Truth) <= 1e-3)
-        self.failUnless(RE(Dir, Dir_Truth) <= 1e-4)
+        self.assertLessEqual(RE(TAS, TAS_Truth), 1e-4)
+        self.assertLessEqual(RE(WS, WS_Truth), 1e-3)
+        self.assertLessEqual(RE(Dir, Dir_Truth), 1e-4)
 
         # four legs, returning TAS only
 
         Value = SS.gps2tas([178, 185, 188, 184], [178, 82, 355, 265])
         Truth = 183.73
-        self.failUnless(RE(Value, Truth) <= 1e-4)
+        self.assertLessEqual(RE(Value, Truth), 1e-4)
 
     def test_03(self):
 
@@ -62,12 +62,12 @@ class Test_gps2tas(unittest.TestCase):
         H0_T = 178.46
         H1_T = 83.52
         H2_T = 354.45
-        self.failUnless(RE(TAS, TAS_Truth) <= 1e-4)
-        self.failUnless(RE(WS, WS_Truth) <= 1e-3)
-        self.failUnless(RE(Dir, Dir_Truth) <= 1e-4)
-        self.failUnless(RE(H0, H0_T) <= 1e-4)
-        self.failUnless(RE(H1, H1_T) <= 1e-4)
-        self.failUnless(RE(H2, H2_T) <= 1e-4)
+        self.assertLessEqual(RE(TAS, TAS_Truth), 1e-4)
+        self.assertLessEqual(RE(WS, WS_Truth), 1e-3)
+        self.assertLessEqual(RE(Dir, Dir_Truth), 1e-4)
+        self.assertLessEqual(RE(H0, H0_T), 1e-4)
+        self.assertLessEqual(RE(H1, H1_T), 1e-4)
+        self.assertLessEqual(RE(H2, H2_T), 1e-4)
 
     def test_04(self):
 
@@ -75,7 +75,7 @@ class Test_gps2tas(unittest.TestCase):
 
         Value = SS.gps2tas([178, 185, 188, 184], [178, 82, 355, 265])
         Truth = 183.73
-        self.failUnless(RE(Value, Truth) <= 1e-4)
+        self.assertLessEqual(RE(Value, Truth), 1e-4)
 
     def test_05(self):
 
@@ -85,8 +85,8 @@ class Test_gps2tas(unittest.TestCase):
                                265], 1)
         TAS_Truth = 183.73
         SD_Truth = 0.827
-        self.failUnless(RE(TAS, TAS_Truth) <= 1e-4)
-        self.failUnless(RE(SD, SD_Truth) <= 1e-3)
+        self.assertLessEqual(RE(TAS, TAS_Truth), 1e-4)
+        self.assertLessEqual(RE(SD, SD_Truth), 1e-3)
 
     def test_06(self):
 
@@ -100,16 +100,16 @@ class Test_gps2tas(unittest.TestCase):
         (W1_T, D1_T) = (3.58, 181.52)
         (W2_T, D2_T) = (5.15, 162.7)
         (W3_T, D3_T) = (6.44, 177.95)
-        self.failUnless(RE(TAS, TAS_Truth) <= 1e-4)
-        self.failUnless(RE(SD, SD_Truth) <= 1e-3)
-        self.failUnless(RE(D0, D0_T) <= 1e-4)
-        self.failUnless(RE(D1, D1_T) <= 1e-4)
-        self.failUnless(RE(D2, D2_T) <= 1e-4)
-        self.failUnless(RE(D3, D3_T) <= 1e-4)
-        self.failUnless(RE(W0, W0_T) <= 1e-3)
-        self.failUnless(RE(W1, W1_T) <= 1e-3)
-        self.failUnless(RE(W2, W2_T) <= 1e-3)
-        self.failUnless(RE(W3, W3_T) <= 1e-3)
+        self.assertLessEqual(RE(TAS, TAS_Truth), 1e-4)
+        self.assertLessEqual(RE(SD, SD_Truth), 1e-3)
+        self.assertLessEqual(RE(D0, D0_T), 1e-4)
+        self.assertLessEqual(RE(D1, D1_T), 1e-4)
+        self.assertLessEqual(RE(D2, D2_T), 1e-4)
+        self.assertLessEqual(RE(D3, D3_T), 1e-4)
+        self.assertLessEqual(RE(W0, W0_T), 1e-3)
+        self.assertLessEqual(RE(W1, W1_T), 1e-3)
+        self.assertLessEqual(RE(W2, W2_T), 1e-3)
+        self.assertLessEqual(RE(W3, W3_T), 1e-3)
 
 
 if __name__ == '__main__':

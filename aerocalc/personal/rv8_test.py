@@ -48,8 +48,8 @@ import aerocalc.engine.lycoming.io360a as IO
 import aerocalc.airspeed
 import aerocalc.std_atm as sa
 
-import .ft_data_reduction as FT
-import .prop_map as PM
+from . import ft_data_reduction as ft
+from . import prop_map as pm
 
 
 # level flight test cases
@@ -113,7 +113,7 @@ def run_tests(cd0=0.0221, e=0.825):
         excess_power = thrust_power - drag_power
 
         print('Case', n, 'Altitude =', dalt, 'TAS =', tas,
-              'EAS =', eas, 'Excess power =', excess_power, sep='\n')
+              'EAS =', eas, 'Excess power =', excess_power)
 
         sum_sq += wt_value * excess_power ** 2
         wt_value_tot += wt_value
@@ -517,13 +517,13 @@ def prop_test_cases():
                 power = test[2]
                 tas = speed(prop, alt, 1800, power, rpm, prop=prop, rv=rv,
                     speed_units=speed_units)
-                print('Alt =', alt, 'Power =', power, 'Speed =', tas, \)
-                    speed_units, 'TAS'
+                print('Alt =', alt, 'Power =', power,
+                      'Speed =', tas, speed_units, 'TAS')
 
 
 def roc(prop, altitude, eas, weight, power, rpm, temp='std', temp_units='C',
-    rv='8', wing_area=110, speed_units='kt', flap=0,
-    load_factor=1, wheel_pants=1, prop_factor=1):
+        rv='8', wing_area=110, speed_units='kt', flap=0,
+        load_factor=1, wheel_pants=1, prop_factor=1):
     """
     Returns the rate of climb or descent.
     """
@@ -886,8 +886,7 @@ def climb_data(prop, weight = 1800., alt_max = 20000., TO_fuel = 0, TO_dist = 0,
         rpm=2500
         MP_max=30
     else:
-        raise ValueError, "pwr must be one of 'max', 'cc'(or 2500")
-
+        raise ValueError("pwr must be one of 'max', 'cc', or 2500")
 
     if output == 'raw':
         print(string.center('Altitude', 10),)
@@ -908,8 +907,8 @@ def climb_data(prop, weight = 1800., alt_max = 20000., TO_fuel = 0, TO_dist = 0,
         # data for MSL
         print(string.rjust(locale.format('%.0f', 0, True), 7),)
         # calculate ROC at MSL
-        print(string.rjust(locale.format('%.0f', round(_alt2ROC(prop, 0) / 10.) * 10, \)
-                      True), 10),
+        print(string.rjust(locale.format('%.0f', round(_alt2ROC(prop, 0) / 10.) * 10, 
+                                         True), 10))
         print(string.rjust('%.1f' % (0), 10),)
         print(string.rjust('%.1f' % (TO_fuel), 10),)
         print(string.rjust('%.1f' % (TO_dist), 10),)

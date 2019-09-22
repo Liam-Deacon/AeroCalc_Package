@@ -6,14 +6,14 @@
 from __future__ import division
 import csv
 import glob
-import interpolator as I
+# import interpolator as I
 import numpy as np
 import numpy as N
 import os.path
 from platform import node
 import re
-import std_atm as SA
-import unit_conversion as U
+import aerocalc.std_atm as SA
+import aerocalc.unit_conversion as U
 
 # #############################################################################
 #
@@ -941,7 +941,7 @@ def cp2ct(prop, Cp, J, tip_mach):
     values = [[[Ct_low_low_low, Ct_low_high_low], [Ct_low_low_high, Ct_low_high_high]],
               [[Ct_high_low_low, Ct_high_high_low], [Ct_high_low_high, Ct_high_high_high]]]
 
-    Ct = I.interpolate3(x, y, z, values, J, Cp, tip_mach)
+    Ct = np.interp.interpolate3(x, y, z, values, J, Cp, tip_mach)
 
     return Ct
 
@@ -1051,7 +1051,7 @@ def cp2eff(prop, Cp, J, tip_mach):
     # print('Cp:', Cp)
     # print('tip mach:', tip_mach)
 
-    eff = I.interpolate3(x, y, z, values, J, Cp, tip_mach)
+    eff = np.interp.interpolate3(x, y, z, values, J, Cp, tip_mach)
 
     return eff
 
@@ -1129,7 +1129,7 @@ def cp2blade_angle(prop, Cp, J, tip_mach):
     values = [[[blade_angle_low_low_low, blade_angle_low_high_low], [blade_angle_low_low_high, blade_angle_low_high_high]],
               [[blade_angle_high_low_low, blade_angle_high_high_low], [blade_angle_high_low_high, blade_angle_high_high_high]]]
 
-    blade_angle = I.interpolate3(x, y, z, values, J, Cp, tip_mach)
+    blade_angle = np.interp.interpolate3(x, y, z, values, J, Cp, tip_mach)
 
     return blade_angle
 
@@ -1146,7 +1146,7 @@ def blade_angle2cp(prop, blade_angle, J, tip_mach):
 
     i = N.searchsorted(temp_blade_angles, blade_angle)
 
-    return I.interpolate(
+    return np.interp.interpolate(
         temp_blade_angles[i:i + 2], temp_cps[i:i + 2], blade_angle)
 
 

@@ -38,7 +38,7 @@ class Test_eas2cl(unittest.TestCase):
             speed_units='kt',
             )
         Truth = 1.9333626157
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -51,7 +51,7 @@ class Test_eas2cl(unittest.TestCase):
             speed_units='mph',
             )
         Truth = 0.49889058073
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 
 class Test_cas2cl(unittest.TestCase):
@@ -74,7 +74,7 @@ class Test_cas2cl(unittest.TestCase):
             alt_units='ft',
             )
         Truth = 0.15149332672
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -89,7 +89,7 @@ class Test_cas2cl(unittest.TestCase):
             alt_units='m',
             )
         Truth = 2.6721923079
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 
 class Test_tas2cl(unittest.TestCase):
@@ -112,7 +112,7 @@ class Test_tas2cl(unittest.TestCase):
             alt_units='ft',
             )
         Truth = 1.73241190
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -129,7 +129,7 @@ class Test_tas2cl(unittest.TestCase):
             alt_units='m',
             )
         Truth = 0.07487161
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 
 class Test_cl2eas(unittest.TestCase):
@@ -150,7 +150,7 @@ class Test_cl2eas(unittest.TestCase):
             speed_units='kt',
             )
         Truth = 80
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -163,7 +163,7 @@ class Test_cl2eas(unittest.TestCase):
             speed_units='ft/s',
             )
         Truth = 350
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 
 class Test_cl2cas(unittest.TestCase):
@@ -186,7 +186,7 @@ class Test_cl2cas(unittest.TestCase):
             alt_units='ft',
             )
         Truth = 200
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -201,7 +201,7 @@ class Test_cl2cas(unittest.TestCase):
             alt_units='m',
             )
         Truth = 80
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 
 class Test_cl2tas(unittest.TestCase):
@@ -224,7 +224,7 @@ class Test_cl2tas(unittest.TestCase):
             alt_units='ft',
             )
         Truth = 80
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -241,7 +241,7 @@ class Test_cl2tas(unittest.TestCase):
             alt_units='m',
             )
         Truth = 80
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 class Test_cl2lift(unittest.TestCase):
 
@@ -261,7 +261,7 @@ class Test_cl2lift(unittest.TestCase):
             speed_units='kt',
             )
         Truth = 1000
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -274,7 +274,7 @@ class Test_cl2lift(unittest.TestCase):
             speed_units='ft/s',
             )
         Truth = 800
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 # if we run unittest.main(), we get just a single line of output, plus any
 # tracebacks from failures.

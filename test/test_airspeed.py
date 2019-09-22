@@ -40,7 +40,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(100, press_units='psf')
         Truth = 34.0493
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -49,7 +49,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(700, press_units='psf', speed_units='mph')
         Truth = 1540.37
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_03(self):
 
@@ -58,7 +58,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(300, press_units='in HG', speed_units='mph')
         Truth = 3.38145
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_04(self):
 
@@ -67,7 +67,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(55, press_units='in HG', speed_units='kt')
         Truth = .145052
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_05(self):
 
@@ -76,7 +76,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(300, press_units='mm HG', speed_units='km/h')
         Truth = 32.385
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_06(self):
 
@@ -85,7 +85,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(299, press_units='pa', speed_units='km/h')
         Truth = 4288.5
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_07(self):
 
@@ -94,7 +94,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(280, press_units='mm HG')
         Truth = 99.671
-        self.failUnless(RE(Value, Truth) <= 2e-5)
+        self.assertLessEqual(RE(Value, Truth), 2e-5)
 
     def test_08(self):
 
@@ -103,7 +103,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(244, press_units='pa')
         Truth = 9983.7
-        self.failUnless(RE(Value, Truth) <= 2e-5)
+        self.assertLessEqual(RE(Value, Truth), 2e-5)
 
     def test_09(self):
 
@@ -112,7 +112,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(1000, press_units='in HG', speed_units='mph')
         Truth = 52.5970
-        self.failUnless(RE(Value, Truth) <= 2e-5)
+        self.assertLessEqual(RE(Value, Truth), 2e-5)
 
     def test_10(self):
 
@@ -121,7 +121,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(1000, press_units='psf', speed_units='mph')
         Truth = 3719.98
-        self.failUnless(RE(Value, Truth) <= 2e-5)
+        self.assertLessEqual(RE(Value, Truth), 2e-5)
 
     def test_11(self):
 
@@ -130,7 +130,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(1000, press_units='in HG')
         Truth = 73.5454
-        self.failUnless(RE(Value, Truth) <= 2e-5)
+        self.assertLessEqual(RE(Value, Truth), 2e-5)
 
     def test_12(self):
 
@@ -139,7 +139,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(1000, press_units='psf')
         Truth = 5201.59
-        self.failUnless(RE(Value, Truth) <= 2e-5)
+        self.assertLessEqual(RE(Value, Truth), 2e-5)
 
     def test_13(self):
 
@@ -148,7 +148,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(1700, press_units='mm HG', speed_units='km/h')
         Truth = 1524.86
-        self.failUnless(RE(Value, Truth) <= 2e-5)
+        self.assertLessEqual(RE(Value, Truth), 2e-5)
 
     def test_14(self):
 
@@ -157,7 +157,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(1700, press_units='pa', speed_units='km/h')
         Truth = 203298
-        self.failUnless(RE(Value, Truth) <= 2e-5)
+        self.assertLessEqual(RE(Value, Truth), 2e-5)
 
     def test_15(self):
 
@@ -166,7 +166,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(1000, press_units='mm HG')
         Truth = 1868.05
-        self.failUnless(RE(Value, Truth) <= 2e-5)
+        self.assertLessEqual(RE(Value, Truth), 2e-5)
 
     def test_16(self):
 
@@ -175,7 +175,7 @@ class Test_cas2dp(unittest.TestCase):
 
         Value = A.cas2dp(1000, press_units='pa')
         Truth = 249053
-        self.failUnless(RE(Value, Truth) <= 2e-5)
+        self.assertLessEqual(RE(Value, Truth), 2e-5)
 
 
 class Test_dp2cas(unittest.TestCase):
@@ -187,7 +187,7 @@ class Test_dp2cas(unittest.TestCase):
 
         Value = A.dp2cas(34.0493, press_units='psf')
         Truth = 100
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -196,7 +196,7 @@ class Test_dp2cas(unittest.TestCase):
 
         Value = A.dp2cas(1540.37, press_units='psf', speed_units='mph')
         Truth = 700
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_03(self):
 
@@ -206,7 +206,7 @@ class Test_dp2cas(unittest.TestCase):
         Value = A.dp2cas(3.38145, press_units='in HG', speed_units='mph'
                          )
         Truth = 300
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_04(self):
 
@@ -215,7 +215,7 @@ class Test_dp2cas(unittest.TestCase):
 
         Value = A.dp2cas(.145052, press_units='in HG', speed_units='kt')
         Truth = 55
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_05(self):
 
@@ -225,7 +225,7 @@ class Test_dp2cas(unittest.TestCase):
         Value = A.dp2cas(32.385, press_units='mm HG', speed_units='km/h'
                          )
         Truth = 300
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_06(self):
 
@@ -234,7 +234,7 @@ class Test_dp2cas(unittest.TestCase):
 
         Value = A.dp2cas(4288.5, press_units='pa', speed_units='km/h')
         Truth = 299
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_07(self):
 
@@ -243,7 +243,7 @@ class Test_dp2cas(unittest.TestCase):
 
         Value = A.dp2cas(99.671, press_units='mm HG')
         Truth = 280
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_08(self):
 
@@ -252,7 +252,7 @@ class Test_dp2cas(unittest.TestCase):
 
         Value = A.dp2cas(9983.7, press_units='pa')
         Truth = 244
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 # ....def test_09(self):
 # ........# check out of range on airspeed too high
@@ -266,7 +266,7 @@ class Test_dp2cas(unittest.TestCase):
 
         Value = A.dp2cas(5201.59, press_units='psf')
         Truth = 1000
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_10(self):
 
@@ -275,7 +275,7 @@ class Test_dp2cas(unittest.TestCase):
 
         Value = A.dp2cas(4676.47, press_units='psf', speed_units='mph')
         Truth = 1100
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_11(self):
 
@@ -285,7 +285,7 @@ class Test_dp2cas(unittest.TestCase):
         Value = A.dp2cas(66.1208, press_units='in HG', speed_units='mph'
                          )
         Truth = 1100
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_12(self):
 
@@ -294,7 +294,7 @@ class Test_dp2cas(unittest.TestCase):
 
         Value = A.dp2cas(73.5454, press_units='in HG', speed_units='kt')
         Truth = 1000
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_13(self):
 
@@ -304,7 +304,7 @@ class Test_dp2cas(unittest.TestCase):
         Value = A.dp2cas(1524.86, press_units='mm HG',
                          speed_units='km/h')
         Truth = 1700
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_14(self):
 
@@ -313,7 +313,7 @@ class Test_dp2cas(unittest.TestCase):
 
         Value = A.dp2cas(203298, press_units='pa', speed_units='km/h')
         Truth = 1700
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_15(self):
 
@@ -322,7 +322,7 @@ class Test_dp2cas(unittest.TestCase):
 
         Value = A.dp2cas(1868.05, press_units='mm HG')
         Truth = 1000
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_16(self):
 
@@ -331,7 +331,7 @@ class Test_dp2cas(unittest.TestCase):
 
         Value = A.dp2cas(249053, press_units='pa')
         Truth = 1000
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 
 class Test_cas2tas(unittest.TestCase):
@@ -343,7 +343,7 @@ class Test_cas2tas(unittest.TestCase):
 
         Value = A.cas2tas(400, 30000)
         Truth = 602.6
-        self.failUnless(RE(Value, Truth) <= 3e-5)
+        self.assertLessEqual(RE(Value, Truth), 3e-5)
 
     def test_02(self):
 
@@ -352,7 +352,7 @@ class Test_cas2tas(unittest.TestCase):
 
         Value = A.cas2tas(400, 30000, -70, temp_units='F')
         Truth = 586.266
-        self.failUnless(RE(Value, Truth) <= 3e-5)
+        self.assertLessEqual(RE(Value, Truth), 3e-5)
 
 
 class Test_tas2cas(unittest.TestCase):
@@ -364,7 +364,7 @@ class Test_tas2cas(unittest.TestCase):
 
         Value = A.tas2cas(602.6, 30000)
         Truth = 400
-        self.failUnless(RE(Value, Truth) <= 3e-5)
+        self.assertLessEqual(RE(Value, Truth), 3e-5)
 
     def test_02(self):
 
@@ -373,7 +373,7 @@ class Test_tas2cas(unittest.TestCase):
 
         Value = A.tas2cas(586.266, 30000, -70, temp_units='F')
         Truth = 400
-        self.failUnless(RE(Value, Truth) <= 3e-5)
+        self.assertLessEqual(RE(Value, Truth), 3e-5)
 
 
 class Test_mach2dp_over_p(unittest.TestCase):
@@ -387,7 +387,7 @@ class Test_mach2dp_over_p(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = .52434
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 # ....def test_02(self):
 # ........# check out of range on mach too high
@@ -402,7 +402,7 @@ class Test_mach2dp_over_p(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = .89293
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_03(self):
 
@@ -413,7 +413,7 @@ class Test_mach2dp_over_p(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = .89514
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_04(self):
 
@@ -424,7 +424,7 @@ class Test_mach2dp_over_p(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = 31.65347
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 
 class Test_dp_over_p2mach(unittest.TestCase):
@@ -438,7 +438,7 @@ class Test_dp_over_p2mach(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = .8
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -449,7 +449,7 @@ class Test_dp_over_p2mach(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = .999
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_03(self):
 
@@ -460,7 +460,7 @@ class Test_dp_over_p2mach(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = 1
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_04(self):
 
@@ -471,7 +471,7 @@ class Test_dp_over_p2mach(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = 1.001
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_05(self):
 
@@ -482,7 +482,7 @@ class Test_dp_over_p2mach(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = 5
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 
 class Test_tas2mach(unittest.TestCase):
@@ -496,7 +496,7 @@ class Test_tas2mach(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = 1
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -508,7 +508,7 @@ class Test_tas2mach(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = .5
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_03(self):
 
@@ -519,7 +519,7 @@ class Test_tas2mach(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = 1
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_04(self):
 
@@ -531,7 +531,7 @@ class Test_tas2mach(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = 1
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 
 class Test_mach2tas(unittest.TestCase):
@@ -545,7 +545,7 @@ class Test_mach2tas(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = 661.48
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -556,7 +556,7 @@ class Test_mach2tas(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = 761.22 / 2
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_03(self):
 
@@ -567,7 +567,7 @@ class Test_mach2tas(unittest.TestCase):
         # truth value from NASA RP 1046
 
         Truth = 734.58
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 
 class Test_mach2temp(unittest.TestCase):
@@ -578,7 +578,7 @@ class Test_mach2temp(unittest.TestCase):
 
         Value = A.mach2temp(.5, 15, .5)
         Truth = 7.97195121951
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -586,7 +586,7 @@ class Test_mach2temp(unittest.TestCase):
 
         Value = A.mach2temp(.7, 59, .8, temp_units='F')
         Truth = 21.29253709199
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 
 class Test_tas2temp(unittest.TestCase):
@@ -597,7 +597,7 @@ class Test_tas2temp(unittest.TestCase):
 
         Value = A.tas2temp(300, 15, 0)
         Truth = 15
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_02(self):
 
@@ -606,7 +606,7 @@ class Test_tas2temp(unittest.TestCase):
         Value = A.tas2temp(300, 59, .8, temp_units='F',
                            speed_units='mph')
         Truth = 46.11
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
     def test_03(self):
 
@@ -616,7 +616,7 @@ class Test_tas2temp(unittest.TestCase):
                            speed_units='km/h')
         Truth = -6.664535
         # print(Value, Truth)
-        self.failUnless(RE(Value, Truth) <= 1e-5)
+        self.assertLessEqual(RE(Value, Truth), 1e-5)
 
 
 # create test suites

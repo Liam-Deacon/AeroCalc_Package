@@ -828,7 +828,7 @@ def gps2tas(GS, TK, verbose=0):
         ave_wind_y /= 4.
         ave_wind_speed = np.sqrt(ave_wind_x ** 2 + ave_wind_y ** 2)
         ave_wind_dir = (
-            720. - (180. / np.pi * np.atan2(ave_wind_x, ave_wind_y))) % 360
+            720. - (180. / np.pi * np.arctan2(ave_wind_x, ave_wind_y))) % 360
         # return results
 
         if verbose == 0:
@@ -883,12 +883,12 @@ def gps2tas3(GS, TK, verbose=0):
     wind_y = m[0] * wind_x + b[0]
 
     wind_speed = np.sqrt(wind_x ** 2 + wind_y ** 2)
-    wind_dir = (540. - (180. / np.pi * np.atan2(wind_x, wind_y))) % 360.
+    wind_dir = (540. - (180. / np.pi * np.arctan2(wind_x, wind_y))) % 360.
 
     TAS = np.sqrt((x[0] - wind_x) ** 2 + (y[0] - wind_y) ** 2)
 
     if verbose >= 2:
-        hdg = [(540. - (180. / np.pi * np.atan2(wind_x - x[i],
+        hdg = [(540. - (180. / np.pi * np.arctan2(wind_x - x[i],
                                                 wind_y - y[i]))) % 360.
                for i in range(3)]
 
