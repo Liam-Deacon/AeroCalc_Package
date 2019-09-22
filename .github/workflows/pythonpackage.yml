@@ -20,11 +20,12 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        python -m pip install setuptools numpy scipy clipboard
         # pip install -r requirements.txt
     - name: Run unit tests
       run: |
         pip install pytest
-        pytest test*
+        PYTHONPATH="$(pwd)" python -m pytest test/
     - name: Run dependency version security checks
       run: |
         pip install safety
