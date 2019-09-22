@@ -4,7 +4,7 @@
 # #############################################################################
 # Copyright (c) 2008, Kevin Horton
 # All rights reserved.
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 # *
 #     * Redistributions of source code must retain the above copyright
@@ -89,20 +89,23 @@
 """
 Perform various air speed conversions.
 
-Convert between Indicated Air Speed (IAS), Calibrated Air Speed (CAS), 
+Convert between Indicated Air Speed (IAS), Calibrated Air Speed (CAS),
 Equivalent Air Speed (EAS), True Air Speed (TAS) and mach number.
 
 Convert between pitot static system pressures and air speed.
 
-Provide interactive airspeed conversions when script is run directly, e.g. 
+Provide interactive airspeed conversions when script is run directly, e.g.
 'python airspeed.py'.
 
 Not compatible with Python 3.  For Python 3, use airspeed_p3k.
 """
 
-import math as M
+import numpy as np
+import ast
+
 from . import std_atm as SA
 from . import constants
+from .val_input import safe_input
 
 try:
     from .default_units import *
@@ -153,17 +156,18 @@ def _dp2speed(
     Rhoref,
     press_units=default_press_units,
     speed_units=default_speed_units,
-    ):
+):
 
     dp = U.press_conv(dp, from_units=press_units, to_units='pa')
-    speed = M.sqrt(((7. * Pref) * (1. / Rhoref)) * ((dp / Pref + 1.)
-                    ** (2. / 7.) - 1.))
+    speed = np.sqrt(((7. * Pref) * (1. / Rhoref)) * ((dp / Pref + 1.)
+                                                    ** (2. / 7.) - 1.))
 
     # check to confirm the speed is less than 661.48 kt
 
     speed_kt = U.speed_conv(speed, from_units='m/s', to_units='kt')
     if speed_kt > 661.48:
-        raise ValueError('The function _dp2speed only works if the speed is less than or equal to 661.48 kt')
+        raise ValueError(
+            'The function _dp2speed only works if the speed is less than or equal to 661.48 kt')
     speed = U.speed_conv(speed, from_units='m/s', to_units=speed_units)
 
     return speed
@@ -172,25 +176,25 @@ def _dp2speed(
 def dp2cas(dp, press_units=default_press_units,
            speed_units=default_speed_units):
     """
-    Return the CAS for a given differential pressure (the difference 
+    Return the CAS for a given differential pressure (the difference
     between the pitot and static pressures).
-    
+
     The pressure units may be in inches of HG, mm of HG, psi, lb/ft^2,
-    hpa and mb.  The units are specified as: 'in HG', 'mm HG', 'psi', 
+    hpa and mb.  The units are specified as: 'in HG', 'mm HG', 'psi',
     'lb/in**2', 'psf', 'lb/ft**2 'hpa', 'mb' or 'pa'.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
 
     If the units are not specified, the units in default_units.py are used.
 
     Examples:
-    
-    Determine the CAS in kt that is equivalent to a differential pressure 
+
+    Determine the CAS in kt that is equivalent to a differential pressure
     of 15 in HG:
     >>> dp2cas(15)
     518.96637566127652
-    
-    Determine the CAS in mph that is equivalent to a differential pressure 
+
+    Determine the CAS in mph that is equivalent to a differential pressure
     of 0.2 psi:
     >>> dp2cas(.2, press_units = 'psi', speed_units = 'mph')
     105.88271367435266
@@ -234,7 +238,7 @@ def dp2cas(dp, press_units=default_press_units,
 
         # keep iterating until dp is within 0.001% of desired value
 
-        while M.fabs(dp_guess - dp_seek) / dp_seek > 1e-5:
+        while np.fabs(dp_guess - dp_seek) / dp_seek > 1e-5:
             if dp_guess > dp_seek:
                 high = guess
             else:
@@ -260,22 +264,22 @@ def dp2eas(
     press_units=default_press_units,
     speed_units=default_speed_units,
     alt_units=default_alt_units,
-    ):
+):
     """
-    Return the EAS for a given differential pressure (the difference 
+    Return the EAS for a given differential pressure (the difference
     between the pitot and static pressures) and altitude.
-    
+
     The pressure units may be in inches of HG, mm of HG, psi, lb/ft^2,
-    hpa and mb.  The units are specified as: 'in HG', 'mm HG', 'psi', 
+    hpa and mb.  The units are specified as: 'in HG', 'mm HG', 'psi',
     'lb/in**2', 'psf', 'lb/ft**2 'hpa', 'mb' or 'pa'.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
 
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
     If the units are not specified, the units in default_units.py are used.
-        
+
     This first version only works for EAS < 661.48 kt.
     """
 
@@ -293,24 +297,24 @@ def dp2tas(
     speed_units=default_speed_units,
     alt_units=default_alt_units,
     temp_units=default_temp_units,
-    ):
+):
     """
-    Return the TAS for a given differential pressure (the difference 
+    Return the TAS for a given differential pressure (the difference
     between the pitot and static pressures) and altitude.
-    
+
     The pressure units may be in inches of HG, mm of HG, psi, lb/ft^2,
-    hpa and mb.  The units are specified as: 'in HG', 'mm HG', 'psi', 
+    hpa and mb.  The units are specified as: 'in HG', 'mm HG', 'psi',
     'lb/in**2', 'psf', 'lb/ft**2 'hpa', 'mb' or 'pa'.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
 
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
     The temperature may be in deg C, F, K or R.
-    
+
     If the units are not specified, the units in default_units.py are used.
-    
+
     This first version only works for TAS < 661.48 kt.
     """
 
@@ -318,7 +322,7 @@ def dp2tas(
 
     press_ratio = SA.alt2press_ratio(altitude, alt_units)
     temp_ratio = U.temp_conv(temp, from_units=temp_units, to_units='K')\
-         / 288.15
+        / 288.15
     density_ratio = press_ratio / temp_ratio
     Rho = Rho0 * density_ratio
 
@@ -345,14 +349,14 @@ def _speed2dp(
     Rhoref,
     press_units=default_press_units,
     speed_units=default_speed_units,
-    ):
-    """ Return a delta pressure (the difference between the pitot and 
+):
+    """ Return a delta pressure (the difference between the pitot and
     static pressures) for a given speed.  Subsonic equation.
     """
 
     speed = U.speed_conv(speed, from_units=speed_units, to_units='m/s')
     dp = Pref * (((Rhoref * speed ** 2.) / (7. * Pref) + 1.) ** 3.5
-                  - 1.)
+                 - 1.)
     dp = U.press_conv(dp, from_units='pa', to_units=press_units)
 
     return dp
@@ -361,14 +365,14 @@ def _speed2dp(
 def _super_cas2dp(mcas):
     """Return the  differential pressure (difference between pitot and static
     pressures) for a given CAS.
-    
+
     This function only works for speed in m/s, and pressure in pa.
-    
+
     This function is only intended for CAS > 661.48 kt.
     """
 
     dp_over_P0 = (F * (mcas / A0) ** 7.) / (7. * (mcas / A0) ** 2. - 1.)\
-         ** 2.5 - 1.
+        ** 2.5 - 1.
     dp = dp_over_P0 * P0
 
     return dp
@@ -379,11 +383,11 @@ def cas2dp(cas, speed_units=default_speed_units,
     """
     Return the differential pressure (difference between pitot and static
     pressures) for a given CAS.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
+
     The pressure units may be in inches of HG, mm of HG, psi, lb/ft^2,
-    hpa and mb.  The units are specified as: 'in HG', 'mm HG', 'psi', 
+    hpa and mb.  The units are specified as: 'in HG', 'mm HG', 'psi',
     'lb/in**2', 'psf', 'lb/ft**2 'hpa', 'mb' or 'pa'.
 
     If the units are not specified, the units in default_units.py are used.
@@ -417,18 +421,18 @@ def eas2dp(
     speed_units=default_speed_units,
     alt_units=default_alt_units,
     press_units=default_press_units,
-    ):
+):
     """
     Return the differential pressure (difference between pitot and static
     pressures) for a given EAS.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
+
     The pressure units may be in inches of HG, mm of HG, psi, lb/ft^2,
-    hpa and mb.  The units are specified as: 'in HG', 'mm HG', 'psi', 
+    hpa and mb.  The units are specified as: 'in HG', 'mm HG', 'psi',
     'lb/in**2', 'psf', 'lb/ft**2 'hpa', 'mb' or 'pa'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
     If the units are not specified, the units in default_units.py are used.
@@ -441,7 +445,8 @@ def eas2dp(
 
     keas = U.speed_conv(eas, from_units=speed_units, to_units='kt')
     if keas > 661.48:
-        raise ValueError('The function eas2dp only works if the eas is less than or equal to 661.48 kt')
+        raise ValueError(
+            'The function eas2dp only works if the eas is less than or equal to 661.48 kt')
 
     P = SA.alt2press(altitude, alt_units=alt_units, press_units='pa')
     dp = _speed2dp(eas, P, Rho0, press_units=press_units,
@@ -458,24 +463,24 @@ def tas2dp(
     alt_units=default_alt_units,
     temp_units=default_temp_units,
     press_units=default_press_units,
-    ):
+):
     """
     Return the differential pressure (difference between pitot and static
     pressures) for a given TAS.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
+
     The pressure units may be in inches of HG, mm of HG, psi, lb/ft^2,
-    hpa and mb.  The units are specified as: 'in HG', 'mm HG', 'psi', 
+    hpa and mb.  The units are specified as: 'in HG', 'mm HG', 'psi',
     'lb/in**2', 'psf', 'lb/ft**2 'hpa', 'mb' or 'pa'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
     The temperature may be in deg C, F, K or R.
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     This first version only works for CAS < 661.48 kt.
 
     """
@@ -484,13 +489,14 @@ def tas2dp(
 
     ktas = U.speed_conv(tas, from_units=speed_units, to_units='kt')
     if ktas > 661.48:
-        raise ValueError('The function tas2dp only works if the tas is less than or equal to 661.48 kt')
+        raise ValueError(
+            'The function tas2dp only works if the tas is less than or equal to 661.48 kt')
 
     P = SA.alt2press(altitude, alt_units=alt_units, press_units='pa')
 
     press_ratio = SA.alt2press_ratio(altitude, alt_units)
     temp_ratio = U.temp_conv(temp, from_units=temp_units, to_units='K')\
-         / 288.15
+        / 288.15
     density_ratio = press_ratio / temp_ratio
     Rho = Rho0 * density_ratio
     dp = _speed2dp(tas, P, Rho, press_units=press_units,
@@ -504,13 +510,13 @@ def cas2eas(
     altitude,
     speed_units=default_speed_units,
     alt_units=default_alt_units,
-    ):
+):
     """
     Return the EAS for a given CAS, pressure altitude and temperature.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
     If the units are not specified, the units in default_units.py are used.
@@ -561,20 +567,20 @@ def cas2tas(
     speed_units=default_speed_units,
     alt_units=default_alt_units,
     temp_units=default_temp_units,
-    ):
+):
     """
     Return the TAS for a given CAS, pressure altitude and temperature.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
-    The temperature may be in deg C, F, K or R. The temperature defaults to std 
+    The temperature may be in deg C, F, K or R. The temperature defaults to std
     temperature if it is not input.
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     """
 
     if temp == 'std':
@@ -589,7 +595,7 @@ def cas2tas(
         speed_units=speed_units,
         alt_units=alt_units,
         temp_units=temp_units,
-        )
+    )
 
     return tas
 
@@ -633,7 +639,7 @@ def i_cas2tas(data_items):
         speed_units,
         alt_units,
         temp_units,
-        )
+    )
     data_items['tas'] = tas
     return_string = 'TAS = ' + str(tas) + ' ' + speed_units
     print(return_string)
@@ -646,20 +652,20 @@ def eas2tas(
     speed_units=default_speed_units,
     alt_units=default_alt_units,
     temp_units=default_temp_units,
-    ):
+):
     """
     Return the TAS for a given EAS, pressure altitude and temperature.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
-    The temperature may be in deg C, F, K or R. The temperature defaults to std 
+    The temperature may be in deg C, F, K or R. The temperature defaults to std
     temperature if it is not input.
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     """
 
     if temp == 'std':
@@ -674,7 +680,7 @@ def eas2tas(
         speed_units=speed_units,
         alt_units=alt_units,
         temp_units=temp_units,
-        )
+    )
 
     return tas
 
@@ -718,7 +724,7 @@ def i_eas2tas(data_items):
         speed_units,
         alt_units,
         temp_units,
-        )
+    )
     data_items['tas'] = tas
     return_string = 'TAS = ' + str(tas) + ' ' + speed_units
     print(return_string)
@@ -729,23 +735,23 @@ def eas2cas(
     altitude,
     speed_units=default_speed_units,
     alt_units=default_alt_units,
-    ):
+):
     """
     Return the CAS for a given EAS, pressure altitude and temperature.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
-    If the units are not specified, the default units in default_units.py are used.    
-    
+    If the units are not specified, the default units in default_units.py are used.
+
     Examples:
-    
+
     Determine equivalent Air Speed for 250 kt CAS at 10,000 ft:
     >>> cas2eas(250, 10000)
     248.09577774599643
-    
+
     Determine equivalent Air Speed for 250 mph CAS at 10,000 ft:
     >>> cas2eas(250, 10000, speed_units = 'mph')
     248.54048779668804
@@ -761,14 +767,14 @@ def i_eas2cas(data_items):
     """
     Return the CAS for a given EAS, pressure altitude, with
     interactive input from the user.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     """
 
     data_items['eas'] = _get_EAS(data_items)
@@ -801,22 +807,22 @@ def tas2cas(
     speed_units=default_speed_units,
     alt_units=default_alt_units,
     temp_units=default_temp_units,
-    ):
+):
     """
     Return the CAS for a given TAS, pressure altitude and temperature.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
-    The temperature may be in deg C, F, K or R. The temperature defaults to std 
+    The temperature may be in deg C, F, K or R. The temperature defaults to std
     temperature if it is not input.
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
+
     Determine the true Air Speed for 250 kt CAS at 10,000 ft with standard
     temperature:
     >>> cas2tas(250, 10000)
@@ -827,12 +833,12 @@ def tas2cas(
     >>> cas2tas(250, 10000, speed_units = 'mph')
     289.21977666774131
 
-    Determine the true Air Speed for 250 mph CAS at 10,000 ft with 
+    Determine the true Air Speed for 250 mph CAS at 10,000 ft with
     temperature of 0 deg C:
     >>> cas2tas(250, 10000, 0, speed_units = 'mph')
     291.80148625165526
 
-    Determine the true Air Speed for 250 mph CAS at 10,000 ft with 
+    Determine the true Air Speed for 250 mph CAS at 10,000 ft with
     temperature of 0 deg F:
     >>> cas2tas(250, 10000, 0, speed_units = 'mph', temp_units = 'F')
     282.145887847616
@@ -849,7 +855,7 @@ def tas2cas(
         speed_units,
         alt_units=alt_units,
         temp_units=temp_units,
-        )
+    )
     cas = dp2cas(dp, speed_units=speed_units)
 
     return cas
@@ -859,17 +865,17 @@ def i_tas2cas(data_items):
     """
     Return the CAS for a given TAS, pressure altitude and temp, with
     interactive input from the user.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
-    The temperature may be in deg C, F, K or R. The temperature defaults to std 
+    The temperature may be in deg C, F, K or R. The temperature defaults to std
     temperature if it is not input.
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     """
 
     data_items['tas'] = _get_TAS(data_items)
@@ -903,7 +909,7 @@ def i_tas2cas(data_items):
         speed_units,
         alt_units,
         temp_units,
-        )
+    )
     data_items['cas'] = cas
     return_string = 'CAS = ' + str(cas) + ' ' + speed_units
     print(return_string)
@@ -916,20 +922,20 @@ def tas2eas(
     speed_units=default_speed_units,
     alt_units=default_alt_units,
     temp_units=default_temp_units,
-    ):
+):
     """
     Return the EAS for a given TAS, pressure altitude and temperature.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
-    The temperature may be in deg C, F, K or R. The temperature defaults to std 
+    The temperature may be in deg C, F, K or R. The temperature defaults to std
     temperature if it is not input.
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     """
 
     if temp == 'std':
@@ -943,7 +949,7 @@ def tas2eas(
         speed_units,
         alt_units=alt_units,
         temp_units=temp_units,
-        )
+    )
     eas = dp2eas(dp, altitude, alt_units=alt_units,
                  speed_units=speed_units)
 
@@ -954,17 +960,17 @@ def i_tas2eas(data_items):
     """
     Return the EAS for a given TAS, pressure altitude and temp, with
     interactive input from the user.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
-    The temperature may be in deg C, F, K or R. The temperature defaults to std 
+    The temperature may be in deg C, F, K or R. The temperature defaults to std
     temperature if it is not input.
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     """
 
     data_items['tas'] = _get_TAS(data_items)
@@ -998,7 +1004,7 @@ def i_tas2eas(data_items):
         speed_units,
         alt_units,
         temp_units,
-        )
+    )
     data_items['eas'] = eas
     return_string = 'EAS = ' + str(eas) + ' ' + speed_units
     print(return_string)
@@ -1024,7 +1030,7 @@ def dp_over_p2mach(dp_over_p):
 
 #   mach = (5*( (dp_over_p + 1)**(2/7.) -1) )**0.5
 
-    mach = M.sqrt(5. * ((dp_over_p + 1.) ** (2. / 7.) - 1.))
+    mach = np.sqrt(5. * ((dp_over_p + 1.) ** (2. / 7.) - 1.))
 
     if mach <= 1.:
         return mach
@@ -1059,8 +1065,8 @@ def dp_over_p2mach(dp_over_p):
 
         # keep iterating until dp is within 0.001% of desired value
 
-        while M.fabs(dp_over_p_guess - dp_over_p_seek) / dp_over_p_seek\
-             > 1e-5:
+        while np.fabs(dp_over_p_guess - dp_over_p_seek) / dp_over_p_seek\
+                > 1e-5:
             if dp_over_p_guess > dp_over_p_seek:
                 high = guess
             else:
@@ -1077,9 +1083,9 @@ def mach2dp_over_p(M):
     Return the delta p over p for a given mach number.
     The result is equal to:
     (pitot pressure - static pressure) / static pressure
-    
+
     Example - determine the delta p over p at mach 0.4:
-    
+
     >>> mach2dp_over_p(.4)
     0.11655196580975336
     """
@@ -1106,17 +1112,17 @@ def cas_mach2alt(
     mach,
     speed_units=default_speed_units,
     alt_units=default_alt_units,
-    ):
+):
     """
     Return the altitude that corresponds to a given CAS and mach.
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     """
 
     dp = cas2dp(cas, speed_units=speed_units, press_units='pa')
@@ -1149,7 +1155,7 @@ def i_cas_mach2alt(data_items):
     print(('CAS = ', cas, speed_units))
     print(('Mach = ', mach))
 
-#   print 'Desired altitude units are: ', alt_units
+#   print('Desired altitude units are: ', alt_units)
 
     print()
 
@@ -1165,17 +1171,17 @@ def cas_alt2mach(
     altitude,
     speed_units=default_speed_units,
     alt_units=default_alt_units,
-    ):
+):
     """
     Return the mach that corresponds to a given CAS and altitude.
 
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     """
 
     dp = cas2dp(cas, speed_units=speed_units, press_units='pa')
@@ -1219,18 +1225,18 @@ def _cas_alt2mach2(
     altitude,
     speed_units=default_speed_units,
     alt_units=default_alt_units,
-    ):
+):
     """
     Alternative, trial variant of cas_alt2mach, using the equations from
     USAF TPS notes.
 
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     """
 
     PR = SA.alt2press_ratio(altitude, alt_units)
@@ -1240,8 +1246,8 @@ def _cas_alt2mach2(
 
         # <= 661.48 kt
 
-        mach = M.sqrt(5. * (((1. / PR) * ((1. + 0.2 * (cas / A0) ** 2.)
-                       ** 3.5 - 1.) + 1.) ** (2. / 7.) - 1.))
+        mach = np.sqrt(5. * (((1. / PR) * ((1. + 0.2 * (cas / A0) ** 2.)
+                                          ** 3.5 - 1.) + 1.) ** (2. / 7.) - 1.))
     else:
         raise ValueError('CAS too high.')
 
@@ -1253,18 +1259,18 @@ def mach_alt2cas(
     altitude,
     alt_units=default_alt_units,
     speed_units=default_speed_units,
-    ):
+):
     """
     Return the calibrated Air Speed that corresponds to a given mach and
     altitude.
 
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     """
 
     p = SA.alt2press(altitude, alt_units=alt_units, press_units='pa')
@@ -1322,41 +1328,41 @@ def mach2tas(
     temp_units=default_temp_units,
     alt_units=default_alt_units,
     speed_units=default_speed_units,
-    ):
+):
     """
     Return the TAS for a given mach number.  The temperature or altitude
-    must also be specified.  If the altitude is specified, the temperature 
-    is assumed to be standard.  If both the altitude and temperature are 
+    must also be specified.  If the altitude is specified, the temperature
+    is assumed to be standard.  If both the altitude and temperature are
     specified, the altitude input is ignored.
 
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
-    The temperature may be in deg C, F, K or R. The temperature defaults to std 
+    The temperature may be in deg C, F, K or R. The temperature defaults to std
     temperature if it is not input.
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
-    Determine the TAS in kt at 0.8 mach at a temperature of 
+
+    Determine the TAS in kt at 0.8 mach at a temperature of
     -15 deg C:
     >>> mach2tas(0.8, -15)
     500.87884108468597
-    
-    Determine the TAS in kt at 0.8 mach at 30,000 ft, assuming 
+
+    Determine the TAS in kt at 0.8 mach at 30,000 ft, assuming
     standard temperature:
     >>> mach2tas(0.8, altitude = 30000)
     471.45798523415107
-    
-    Determine the TAS in mph at 0.8 mach at 5000 m, assuming 
+
+    Determine the TAS in mph at 0.8 mach at 5000 m, assuming
     standard temperature:
     >>> mach2tas(0.8, altitude = 5000, alt_units = 'm', speed_units = 'mph')
     573.60326790383715
-    
-    Determine the TAS in km/h at 0.4 mach at a temperature of 
+
+    Determine the TAS in km/h at 0.4 mach at a temperature of
     300 deg K:
     >>> mach2tas(0.4, 300, temp_units = 'K', speed_units = 'km/h')
     499.99796329569176
@@ -1367,7 +1373,8 @@ def mach2tas(
             temp = SA.alt2temp(altitude, temp_units=temp_units,
                                alt_units=alt_units)
         else:
-            raise ValueError('At least one of the temperature or altitude must be specified.')
+            raise ValueError(
+                'At least one of the temperature or altitude must be specified.')
 
     tas = mach * SA.temp2speed_of_sound(temp, temp_units, speed_units)
 
@@ -1411,7 +1418,7 @@ def i_mach2tas(data_items):
         temp_units,
         alt_units,
         speed_units,
-        )
+    )
     data_items['tas'] = tas
     print(('TAS = ', tas, speed_units))
 
@@ -1423,40 +1430,40 @@ def tas2mach(
     temp_units=default_temp_units,
     alt_units=default_alt_units,
     speed_units=default_speed_units,
-    ):
+):
     """
-    Return the mach number for a given TAS.  The temperature or altitude 
-    must also be specified.  If the altitude is specified, the temperature 
-    is assumed to be standard.  If both the altitude and temperature are 
+    Return the mach number for a given TAS.  The temperature or altitude
+    must also be specified.  If the altitude is specified, the temperature
+    is assumed to be standard.  If both the altitude and temperature are
     specified, the altitude input is ignored.
 
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
-    The temperature may be in deg C, F, K or R. The temperature defaults to std 
+    The temperature may be in deg C, F, K or R. The temperature defaults to std
     temperature if it is not input.
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
+
     Determine the mach number for a TAS of 500 kt at a temperature of
     -15 deg C:
     >>> tas2mach(500, -15)
     0.79859632148519943
-    
+
     Determine the mach number for a TAS of 500 kt at a temperature of
     0 deg F:
     >>> tas2mach(500, 0, temp_units = 'F')
     0.80292788758764277
-    
+
     Determine the mach number for a TAS of 500 kt at an altitude of
     10,000 ft, assuming standard temperature:
     >>> tas2mach(500, altitude = 10000)
     0.78328945665870209
-    
+
     Determine the mach number for a TAS of 400 mph at an altitude of
     5000 m, assuming standard temperature:
     >>> tas2mach(400, altitude = 5000, speed_units = 'mph', alt_units = 'm')
@@ -1468,7 +1475,8 @@ def tas2mach(
             temp = SA.alt2temp(altitude, temp_units=temp_units,
                                alt_units=alt_units)
         else:
-            raise ValueError('At least one of the temperature or altitude must be specified.')
+            raise ValueError(
+                'At least one of the temperature or altitude must be specified.')
     A = SA.temp2speed_of_sound(temp, temp_units, speed_units)
 
     mach = tas / SA.temp2speed_of_sound(temp, temp_units, speed_units)
@@ -1513,7 +1521,7 @@ def i_tas2mach(data_items):
         temp_units,
         alt_units,
         speed_units,
-        )
+    )
     data_items['mach'] = mach
     print(('Mach = ', mach))
 
@@ -1536,7 +1544,7 @@ def mach2temp(
     indicated_temp,
     recovery_factor,
     temp_units=default_temp_units,
-    ):
+):
     """
     Return the ambient temp, given the mach number, indicated
     temperature and the temperature probe's recovery factor.
@@ -1544,19 +1552,19 @@ def mach2temp(
     The temperature may be in deg C, F, K or R.
 
     If the units are not specified, the units in default_units.py are used.
-    
-    
+
+
     Examples:
-    
+
     Determine the ambient temperature with an indicated temperature of
     -20 deg C at mach 0.6 with a probe recovery factor of 0.8:
-    
+
     >>> mach2temp(0.6, -20, 0.8)
     -33.787291981845698
-    
+
     Determine the ambient temperature with an indicated temperature of
     75 deg F at mach 0.3 with a probe recovery factor of 0.9:
-    
+
     >>> mach2temp(0.3, 75, 0.9, temp_units = 'F')
     66.476427868529839
     """
@@ -1564,7 +1572,7 @@ def mach2temp(
     indicated_temp = U.temp_conv(indicated_temp, from_units=temp_units,
                                  to_units='K')
     ambient_temp = indicated_temp / (1. + (0.2 * recovery_factor) * mach
-             ** 2.)
+                                     ** 2.)
 
     ambient_temp = U.temp_conv(ambient_temp, from_units='K',
                                to_units=temp_units)
@@ -1578,18 +1586,18 @@ def tas2temp(
     recovery_factor,
     speed_units=default_speed_units,
     temp_units=default_temp_units,
-    ):
+):
     """
-    Return the ambient temp, given the TAS, indicated temperature 
+    Return the ambient temp, given the TAS, indicated temperature
     and the temperature probe's recovery factor.
 
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    
-    The temperature may be in deg C, F, K or R. The temperature defaults to std 
+
+    The temperature may be in deg C, F, K or R. The temperature defaults to std
     temperature if it is not input.
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     """
 
     indicated_temp = U.temp_conv(indicated_temp, from_units=temp_units,
@@ -1600,21 +1608,40 @@ def tas2temp(
     # obtained using mach2temp
 
     ambient_temp = indicated_temp - (recovery_factor * tas ** 2.)\
-         / 7592.4732909142658
+        / 7592.4732909142658
 
     ambient_temp = U.temp_conv(ambient_temp, from_units='K',
                                to_units=temp_units)
 
     return ambient_temp
 
-def ioat2tas(ioat, cas, alt, recovery_factor, temp_units = default_temp_units, speed_units=default_speed_units, alt_units=default_alt_units):
+
+def ioat2tas(ioat, cas, alt, recovery_factor, temp_units=default_temp_units,
+             speed_units=default_speed_units, alt_units=default_alt_units):
     """
     Return true airspeed, given indicated outside air temperature, calibrated airspeed, altitude and OAT probe recovery factor
     """
-    tas_guess = cas2tas(cas, alt, ioat, speed_units=speed_units, alt_units=alt_units, temp_units=temp_units)
-    oat = tas2temp(tas_guess, ioat, recovery_factor, speed_units=speed_units, temp_units=temp_units)
-    tas = cas2tas(cas, alt, oat, speed_units=speed_units, alt_units=alt_units, temp_units=temp_units)
-    
+    tas_guess = cas2tas(
+        cas,
+        alt,
+        ioat,
+        speed_units=speed_units,
+        alt_units=alt_units,
+        temp_units=temp_units)
+    oat = tas2temp(
+        tas_guess,
+        ioat,
+        recovery_factor,
+        speed_units=speed_units,
+        temp_units=temp_units)
+    tas = cas2tas(
+        cas,
+        alt,
+        oat,
+        speed_units=speed_units,
+        alt_units=alt_units,
+        temp_units=temp_units)
+
     return tas
 
 # #############################################################################
@@ -1630,16 +1657,14 @@ def _get_alt(data_items):  # pragma: no cover
     try:
         prompt = 'Altitude = [' + str(data_items['altitude']) + '] '
         value = VI.get_input2(prompt,
-                              conditions_any=['ERROR - Altitude must be a number.  Commas are not allowed.'
-                              , 'type(float(X)) == float', 'X == ""'])
+                              conditions_any=['ERROR - Altitude must be a number.  Commas are not allowed.', 'type(float(X)) == float', 'X == ""'])
         if value != '':
             data_items['altitude'] = float(value)
     except KeyError:
 
         prompt = 'Altitude = '
         data_items['altitude'] = float(VI.get_input2('Altitude = ',
-                conditions_any=['ERROR - Altitude must be a number.  Commas are not allowed.'
-                , 'type(float(X)) == float', 'X == ""']))
+                                                     conditions_any=['ERROR - Altitude must be a number.  Commas are not allowed.', 'type(float(X)) == float', 'X == ""']))
     return data_items['altitude']
 
 
@@ -1657,17 +1682,16 @@ def _get_alt_units(data_items):  # pragma: no cover
         prompt = 'altitude units = [nm], ft, m, km, sm: '
 
     alt_units = VI.get_input2(prompt, conditions_any=[
-        'ERROR - altitude units must be one of "ft", "m", "km", "sm" or "nm".'
-            ,
+        'ERROR - altitude units must be one of "ft", "m", "km", "sm" or "nm".',
         'X == "ft"',
         'X =="m"',
         'X == "km"',
         'X == "sm"',
         'X == "nm"',
         'X == ""',
-        ])
+    ])
     if alt_units != '':
-        # print 'Alt units not blank'
+        # print('Alt units not blank')
         data_items['alt_units'] = alt_units
     return data_items['alt_units']
 
@@ -1676,15 +1700,13 @@ def _get_CAS(data_items):  # pragma: no cover
     try:
         prompt = 'CAS = [' + str(data_items['cas']) + '] '
         value = VI.get_input2(prompt,
-                              conditions_any=['ERROR - CAS must be a positive number.'
-                              , 'float(X) >= 0', 'X == ""'])
+                              conditions_any=['ERROR - CAS must be a positive number.', 'float(X) >= 0', 'X == ""'])
         if value != '':
             data_items['cas'] = float(value)
     except KeyError:
         prompt = 'CAS = '
         data_items['cas'] = float(VI.get_input2(prompt,
-                                  conditions_any=['ERROR - CAS must be a positive number.'
-                                  , 'float(X) >= 0']))
+                                                conditions_any=['ERROR - CAS must be a positive number.', 'float(X) >= 0']))
 
     return data_items['cas']
 
@@ -1693,15 +1715,13 @@ def _get_EAS(data_items):  # pragma: no cover
     try:
         prompt = 'EAS = [' + str(data_items['eas']) + '] '
         value = VI.get_input2(prompt,
-                              conditions_any=['ERROR - EAS must be a positive number.'
-                              , 'float(X) >= 0', 'X == ""'])
+                              conditions_any=['ERROR - EAS must be a positive number.', 'float(X) >= 0', 'X == ""'])
         if value != '':
             data_items['eas'] = float(value)
     except KeyError:
         prompt = 'EAS = '
         data_items['eas'] = float(VI.get_input2(prompt,
-                                  conditions_any=['ERROR - EAS must be a positive number.'
-                                  , 'float(X) >= 0']))
+                                                conditions_any=['ERROR - EAS must be a positive number.', 'float(X) >= 0']))
 
     return data_items['eas']
 
@@ -1710,15 +1730,13 @@ def _get_TAS(data_items):  # pragma: no cover
     try:
         prompt = 'TAS = [' + str(data_items['tas']) + '] '
         value = VI.get_input2(prompt,
-                              conditions_any=['ERROR - TAS must be a positive number.'
-                              , 'float(X) >= 0', 'X == ""'])
+                              conditions_any=['ERROR - TAS must be a positive number.', 'float(X) >= 0', 'X == ""'])
         if value != '':
             data_items['tas'] = float(value)
     except KeyError:
         prompt = 'TAS = '
         data_items['tas'] = float(VI.get_input2(prompt,
-                                  conditions_any=['ERROR - TAS must be a positive number.'
-                                  , 'float(X) >= 0']))
+                                                conditions_any=['ERROR - TAS must be a positive number.', 'float(X) >= 0']))
 
     return data_items['tas']
 
@@ -1736,15 +1754,14 @@ def _get_speed_units(data_items):  # pragma: no cover
         prompt = 'speed units = [ft/s], kt, mph, km/h, m/s: '
 
     spd_units = VI.get_input2(prompt, conditions_any=[
-        'ERROR - speed units must be one of "kt", "mph", "km/h", "m/s" or "ft/s".'
-            ,
+        'ERROR - speed units must be one of "kt", "mph", "km/h", "m/s" or "ft/s".',
         'X == "kt"',
         'X =="mph"',
         'X == "km/h"',
         'X == "m/s"',
         'X == "ft/s"',
         'X == ""',
-        ])
+    ])
     if spd_units != '':
         data_items['speed_units'] = spd_units
     return data_items['speed_units']
@@ -1754,15 +1771,13 @@ def _get_mach(data_items):  # pragma: no cover
     try:
         prompt = 'Mach = [' + str(data_items['mach']) + '] '
         value = VI.get_input2(prompt,
-                              conditions_any=['ERROR - Mach must be a positive number.'
-                              , 'float(X) >= 0', 'X == ""'])
+                              conditions_any=['ERROR - Mach must be a positive number.', 'float(X) >= 0', 'X == ""'])
         if value != '':
             data_items['mach'] = float(value)
     except KeyError:
         prompt = 'Mach = '
         data_items['mach'] = float(VI.get_input2(prompt,
-                                   conditions_any=['ERROR - Mach must be a positive number.'
-                                   , 'float(X) >= 0']))
+                                                 conditions_any=['ERROR - Mach must be a positive number.', 'float(X) >= 0']))
 
     return data_items['mach']
 
@@ -1771,25 +1786,23 @@ def _get_temp(data_items):  # pragma: no cover
     try:
         prompt = 'Temperature = [' + str(data_items['temp']) + '] '
         value = VI.get_input2(prompt,
-                              conditions_any=['ERROR - Temperature must be a number, or S for std temperature.'
-                              , 'X =="S"', 'X == "s"', 'X == ""',
-                              'type(float(X)) == float'])
+                              conditions_any=['ERROR - Temperature must be a number, or S for std temperature.', 'X =="S"', 'X == "s"', 'X == ""',
+                                              'type(float(X)) == float'])
         if value.upper() == 'S':
             data_items['temp'] = SA.alt2temp(data_items['altitude'],
-                    alt_units=data_items['alt_units'],
-                    temp_units=data_items['temp_units'])
+                                             alt_units=data_items['alt_units'],
+                                             temp_units=data_items['temp_units'])
         elif value != '':
             data_items['temp'] = value
     except KeyError:
         prompt = 'Temperature = [std] '
         value = VI.get_input2(prompt,
-                              conditions_any=['ERROR - Temperature must be a number, or S for std temperature.'
-                              , 'X =="S"', 'X == "s"', 'X == ""',
-                              'type(float(X)) == float'])
+                              conditions_any=['ERROR - Temperature must be a number, or S for std temperature.', 'X =="S"', 'X == "s"', 'X == ""',
+                                              'type(float(X)) == float'])
         if value == 'S' or value == 's' or value == '':
             data_items['temp'] = SA.alt2temp(data_items['altitude'],
-                    alt_units=data_items['alt_units'],
-                    temp_units=data_items['temp_units'])
+                                             alt_units=data_items['alt_units'],
+                                             temp_units=data_items['temp_units'])
         else:
             data_items['temp'] = value
 
@@ -1807,14 +1820,13 @@ def _get_temp_units(data_items):  # pragma: no cover
         prompt = 'Temperature units = [R], C, F, K: '
 
     temp_units = VI.get_input2(prompt, conditions_any=[
-        'ERROR - temperature units must be one of "C", "F", "K", or "R".'
-            ,
+        'ERROR - temperature units must be one of "C", "F", "K", or "R".',
         'X.upper() == "C"',
         'X.upper() == "F"',
         'X.upper() == "K"',
         'X.upper() == "R"',
         'X == ""',
-        ]).upper()
+    ]).upper()
     if temp_units != '':
         data_items['temp_units'] = temp_units
     return data_items['temp_units']
@@ -1827,9 +1839,9 @@ def _interactive_mode(data_items):  # pragma: no cover
 
     # data_items = {}
     data_items['speed_units'] = default_speed_units
-    data_items['alt_units']   = default_alt_units
-    data_items['temp_units']  = default_temp_units
-    data_items['function']    = 2 # 
+    data_items['alt_units'] = default_alt_units
+    data_items['temp_units'] = default_temp_units
+    data_items['function'] = 2
 
     _interactive_interface(data_items)
 
@@ -1852,7 +1864,7 @@ def _interactive_interface(data_items):  # pragma: no cover
          'TAS, Altitude and Temperature to Mach'],
         ['i_mach2tas(data_items)',
          'Mach, Altitude and Temperature to TAS'],
-        ]
+    ]
 
     count = 1
     print('The following functions are available:')
@@ -1867,10 +1879,11 @@ def _interactive_interface(data_items):  # pragma: no cover
     prompt = 'Select a function to run by number: [%i] ' % data_items['function']
     item = VI.get_input2(prompt,
                          conditions_any=['You must enter an integer between 1 and '
-                          + str(len(func_list)) + ', or "Q"',
-                         '0 < int(X) <= ' + str(len(func_list)),
-                         'X == "Q"', 'X == "q"', 'X == ""'])
-    if type(item) == 'int' and item.upper() == 'Q':
+                                         + str(len(func_list)) + ', or "Q"',
+                                         '0 < int(X) <= ' +
+                                         str(len(func_list)),
+                                         'X == "Q"', 'X == "q"', 'X == ""'])
+    if isinstance(item, 'int') and item.upper() == 'Q':
         return
     elif item == '':
         item = data_items['function']
@@ -1879,9 +1892,9 @@ def _interactive_interface(data_items):  # pragma: no cover
     print()
     data_items['function'] = item
     func_list_num = item - 1
-    eval(func_list[func_list_num][0])
+    ast.literal_eval(func_list[func_list_num][0])
     prompt = '\nDo another calculation [Y/n]'
-    input_data = eval(input(prompt))
+    input_data = ast.literal_eval(safe_input(prompt))
     #  input_data = input(prompt)
     if input_data == '' or input_data == 'Y' or input_data == 'y':
         print('\n')

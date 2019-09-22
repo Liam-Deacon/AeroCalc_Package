@@ -24,7 +24,19 @@ jobs:
     - name: Run unit tests
       run: |
         pip install pytest
-        pytest aerocalc/test*
+        pytest test*
+    - name: Run dependency version security checks
+      run: |
+        pip install safety
+        safety check
+    - name: Run security checks with bandit
+      run: |
+        pip install bandit
+        bandit -r aerocalc
+    - name: Run unit tests
+      run: |
+        pip install pytest
+        pytest test*
     - name: Create python package
       run: |
         pip install setuptools wheel

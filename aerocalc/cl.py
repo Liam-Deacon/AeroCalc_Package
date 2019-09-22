@@ -32,7 +32,7 @@
 # Version History:
 # vers     date     Notes
 # 0.10   04 May 08  First public release.
-# 0.11   30 Jun 09  Python 3.0 compatibility.  Removed from __future__ 
+# 0.11   30 Jun 09  Python 3.0 compatibility.  Removed from __future__
 #                   import division
 # #############################################################################
 #
@@ -84,20 +84,20 @@ def eas2cl(
     speed_units=default_speed_units,
     weight_units=default_weight_units,
     area_units=default_area_units,
-    ):
+):
     """
-    Returns the coefficient of lift, given equivalent airspeed, weight, and 
+    Returns the coefficient of lift, given equivalent airspeed, weight, and
     wing area.
-    
-    Load factor is an optional input.  The load factor, if not provided, 
+
+    Load factor is an optional input.  The load factor, if not provided,
     defaults to 1.
-    
+
     Example:
     if the wing area is 110 square feet,
     and the weight is 1800 lb,
     and the eas is 55 kt,
     in straight and level flight (so the load factor = 1),
-    
+
     then:
     >>> S = 110
     >>> W = 1800
@@ -112,7 +112,7 @@ def eas2cl(
                             to_units='m**2')
 
     Cl = (((2. * weight) * g) * load_factor) / ((Rho0 * wing_area) * eas
-             ** 2.)
+                                                ** 2.)
 
     return Cl
 
@@ -136,12 +136,12 @@ def cas2cl(
     alt_units=default_alt_units,
     weight_units=default_weight_units,
     area_units=default_area_units,
-    ):
+):
     """
-    Returns the coefficient of lift, given calibrated airspeed, altitude, 
-    weight, and wing area.  
-    
-    Load factor is an optional input.  The load factor, if not provided, 
+    Returns the coefficient of lift, given calibrated airspeed, altitude,
+    weight, and wing area.
+
+    Load factor is an optional input.  The load factor, if not provided,
     defaults to 1.
 
     Example:
@@ -156,9 +156,9 @@ def cas2cl(
     >>> CAS = 200
     >>> Alt = 3000
     >>> cas2cl(CAS, Alt, W, S, load_factor = 2**0.5, speed_units='km/h',\
-    alt_units='m', weight_units='kg', area_units='m**2') 
+    alt_units='m', weight_units='kg', area_units='m**2')
     0.73578131117130885
-    
+
     """
 
     eas = A.cas2eas(cas, altitude, speed_units, alt_units)
@@ -171,7 +171,7 @@ def cas2cl(
         speed_units,
         weight_units,
         area_units,
-        )
+    )
 
     return Cl
 
@@ -197,13 +197,13 @@ def tas2cl(
     temp_units=default_temp_units,
     weight_units=default_weight_units,
     area_units=default_area_units,
-    ):
+):
     """
-    Returns the coefficient of lift, given true airspeed, altitude, weight, 
-    and wing area.  
-    
-    Temperature and load factor are optional inputs.  The temperature, if 
-    not provided, defaults to the standard temperature for the altitude.  
+    Returns the coefficient of lift, given true airspeed, altitude, weight,
+    and wing area.
+
+    Temperature and load factor are optional inputs.  The temperature, if
+    not provided, defaults to the standard temperature for the altitude.
     The load factor, if not provided, defaults to 1.
     """
 
@@ -214,7 +214,7 @@ def tas2cl(
         speed_units,
         alt_units,
         temp_units,
-        )
+    )
 
     Cl = eas2cl(
         eas,
@@ -224,7 +224,7 @@ def tas2cl(
         speed_units,
         weight_units,
         area_units,
-        )
+    )
 
     return Cl
 
@@ -246,12 +246,12 @@ def cl2eas(
     speed_units=default_speed_units,
     weight_units=default_weight_units,
     area_units=default_area_units,
-    ):
+):
     """
-    Returns the equivalent airspeed, given coefficient of lift, weight, and 
+    Returns the equivalent airspeed, given coefficient of lift, weight, and
     wing area.
 
-    Load factor is an optional input.  The load factor, if not provided, 
+    Load factor is an optional input.  The load factor, if not provided,
     defaults to 1.
     """
 
@@ -260,7 +260,7 @@ def cl2eas(
                             to_units='m**2')
 
     eas = ((((2. * weight) * g) * load_factor) / ((Rho0 * wing_area)
-            * Cl)) ** 0.5
+                                                  * Cl)) ** 0.5
     eas = U.speed_conv(eas, from_units='m/s', to_units=speed_units)
     return eas
 
@@ -284,12 +284,12 @@ def cl2cas(
     alt_units=default_alt_units,
     weight_units=default_weight_units,
     area_units=default_area_units,
-    ):
+):
     """
-    Returns the calibrated airspeed, given coefficient of lift, altitude, 
+    Returns the calibrated airspeed, given coefficient of lift, altitude,
     weight, and wing area.
 
-    Load factor is an optional input.  The load factor, if not provided, 
+    Load factor is an optional input.  The load factor, if not provided,
     defaults to 1.
     """
 
@@ -298,7 +298,7 @@ def cl2cas(
                             to_units='m**2')
 
     eas = ((((2. * weight) * g) * load_factor) / ((Rho0 * wing_area)
-            * Cl)) ** 0.5
+                                                  * Cl)) ** 0.5
     eas = U.speed_conv(eas, from_units='m/s', to_units=speed_units)
     cas = A.eas2cas(eas, altitude, speed_units, alt_units)
 
@@ -326,13 +326,13 @@ def cl2tas(
     weight_units=default_weight_units,
     area_units=default_area_units,
     temp_units=default_temp_units,
-    ):
+):
     """
     Returns the true airspeed, given coefficient of lift, altitude, weight,
     and wing area.
-    
-    Temperature and load factor are optional inputs.  The temperature, if 
-    not provided, defaults to the standard temperature for the altitude.  
+
+    Temperature and load factor are optional inputs.  The temperature, if
+    not provided, defaults to the standard temperature for the altitude.
     The load factor, if not provided, defaults to 1.
     """
 
@@ -341,7 +341,7 @@ def cl2tas(
                             to_units='m**2')
 
     eas = ((((2. * weight) * g) * load_factor) / ((Rho0 * wing_area)
-            * Cl)) ** 0.5
+                                                  * Cl)) ** 0.5
     eas = U.speed_conv(eas, from_units='m/s', to_units=speed_units)
     tas = A.eas2tas(
         eas,
@@ -350,7 +350,7 @@ def cl2tas(
         speed_units,
         alt_units,
         temp_units=temp_units,
-        )
+    )
 
     return tas
 
@@ -371,7 +371,7 @@ def cl2lift(
     speed_units=default_speed_units,
     lift_units=default_weight_units,
     area_units=default_area_units,
-    ):
+):
     """
     Returns the lift, given coefficient of lift, equivalent airspeed, and wing
     area.
@@ -390,6 +390,7 @@ def cl2lift(
 
     return lift
 
+
 if __name__ == '__main__':  # pragma: no cover
 
     # run doctest to check the validity of the examples in the doc strings.
@@ -397,4 +398,3 @@ if __name__ == '__main__':  # pragma: no cover
     import doctest
     import sys
     doctest.testmod(sys.modules[__name__])
-

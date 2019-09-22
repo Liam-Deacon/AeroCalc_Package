@@ -34,9 +34,9 @@
 #
 # #############################################################################
 #
-# To Do: 
+# To Do:
 #
-# Done:  1. 
+# Done:  1.
 #
 # #############################################################################
 
@@ -59,43 +59,49 @@ except ImportError:
     default_avgas_units = 'lb'
 
 
-def gps2stall(GS, TK, Hp, T, temp_units='C', alt_units=default_alt_units, speed_units=default_speed_units, GPS_units=default_speed_units):
+def gps2stall(GS, TK, Hp, T, temp_units='C', alt_units=default_alt_units,
+              speed_units=default_speed_units, GPS_units=default_speed_units):
     """
-    Return the CAS at the stall, given four GPS ground speeds, GPS tracks, 
+    Return the CAS at the stall, given four GPS ground speeds, GPS tracks,
     altitude and temperature.
-    
+
     speed_units = CAS units.  May be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
     GS_units = GPS ground speed units.  'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
-    HP = pressure altitude.  May be feet ('ft'), metres ('m'), kilometres ('km'), 
+    HP = pressure altitude.  May be feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
 
-    The temperature may be in deg C, F, K or R. 
+    The temperature may be in deg C, F, K or R.
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     Conduct four stalls, in a four sided box pattern, with all stalls at the same
     pressure altitude.  The data reduction algorithm calculates the TAS using Doug
     Gray's GPS to TAS method, using four different combinations of three legs.  If
     the data quality is high, all four TAS values will be similar, with a low standard
     deviation.
-    
-    The TAS at the stall is converted to CAS, using pressure altitude and 
+
+    The TAS at the stall is converted to CAS, using pressure altitude and
     temperature.
-    
+
     Returns CAS and standard deviation of the CAS value.
-    
+
     Examples:
-    
+
     >>> gps2stall([44, 104, 157, 131], [258, 29, 91, 150], 7000, 14, temp_units='F', GPS_units='km/h')
     (50.322235245211225, 0.6583323098888626)
 
     """
 
-
     tas, std_dev = SSEC.gps2tas(GS, TK, verbose=1)
     tas = U.speed_conv(tas, from_units=GPS_units, to_units=speed_units)
     std_dev = U.speed_conv(std_dev, from_units=GPS_units, to_units=speed_units)
-    cas = A.tas2cas(tas, Hp, T, temp_units=temp_units, alt_units=alt_units, speed_units=speed_units)
-    std_dev = std_dev * cas / tas # factor standard deviation to reference CAS vs TAS
+    cas = A.tas2cas(
+        tas,
+        Hp,
+        T,
+        temp_units=temp_units,
+        alt_units=alt_units,
+        speed_units=speed_units)
+    std_dev = std_dev * cas / tas  # factor standard deviation to reference CAS vs TAS
 
     return cas, std_dev

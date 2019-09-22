@@ -60,11 +60,21 @@
 #
 #     return data_items['cas']
 
+import sys
+import ast
+
 """
-Validate user input against arbitrary criteria.  Used in the interactive 
-interface in other modules.  Not compatible with Python 3.  For Python 3, 
+Validate user input against arbitrary criteria.  Used in the interactive
+interface in other modules.  Not compatible with Python 3.  For Python 3,
 use val_input_p3k.
 """
+
+# get the safe input method for python version
+if sys.version_info.major == 2:
+    safe_input = raw_input
+else:
+    safe_input = input
+
 
 def get_input(
     prompt,
@@ -73,7 +83,7 @@ def get_input(
     check_list=[],
     default='',
     **kwds
-    ):
+):
     """
     Return user input after validating it.
     """
@@ -83,7 +93,7 @@ def get_input(
     if type == 'float':
         while not input_validated:
             # input_data = raw_input(prompt)
-            input_data = eval(input(prompt))
+            input_data = ast.literal_eval(safe_input(prompt))
             try:
                 input_data = float(input_data)
                 input_validated = True
@@ -95,7 +105,7 @@ def get_input(
         # data is a positive float
 
         # input_data = raw_input(prompt)
-        input_data = eval(input(prompt))
+        input_data = ast.literal_eval(safe_input(prompt))
         try:
             input_data = float(input_data)
             if input_data < 0:
@@ -110,7 +120,7 @@ def get_input(
 
         while not input_validated:
             # input_data = raw_input(prompt)
-            input_data = eval(input(prompt))
+            input_data = ast.literal_eval(safe_input(prompt))
             if input_data == '':
                 input_data = default
                 input_validated = True
@@ -126,7 +136,7 @@ def get_input(
 
         while not input_validated:
             # input_data = raw_input(prompt)
-            input_data = eval(input(prompt))
+            input_data = ast.literal_eval(safe_input(prompt))
             if input_data == '':
                 input_data = default
                 input_validated = True
@@ -144,7 +154,7 @@ def get_input(
 
         while not input_validated:
             # input_data = raw_input(prompt)
-            input_data = eval(input(prompt))
+            input_data = ast.literal_eval(safe_input(prompt))
             if input_data == '':
                 input_data = default
                 input_validated = True
@@ -159,9 +169,9 @@ def get_input(
                 print(error_string)
 
     if type == 'int':
-        while 1:
+        while True:
             # input_data = raw_input(prompt)
-            input_data = eval(input(prompt))
+            input_data = ast.literal_eval(safe_input(prompt))
             try:
                 input_data = int(input_data)
                 break
@@ -172,23 +182,23 @@ def get_input(
 
         # data is an int or a string in kwds['str_list']
 
-        while 1:
+        while True:
             # input_data = raw_input(prompt)
-            input_data = eval(input(prompt))
+            input_data = ast.literal_eval(safe_input(prompt))
             if input_data in kwds['str_list']:
                 break
             try:
                 input_data = int(input_data)
                 try:
                     if input_data < kwds['min']:
-                        print('You must enter an integer no less than', \
-                            kwds['min'])
+                        print('You must enter an integer no less than',
+                              kwds['min'])
                 except KeyError:
                     pass
                 try:
                     if input_data > kwds['max']:
-                        print('You must enter an integer less than', \
-                            kwds['max'])
+                        print('You must enter an integer less than',
+                              kwds['max'])
                 except KeyError:
                     break
             except ValueError:
@@ -197,7 +207,7 @@ def get_input(
 
         while not input_validated:
             # input_data = raw_input(prompt)
-            input_data = eval(input(prompt))
+            input_data = ast.literal_eval(safe_input(prompt))
             if input_data == '':
                 input_data = default
                 input_validated = True
@@ -215,42 +225,42 @@ def get_input2(
     conditions_any=[],
     conditions_all=[],
     debug=False,
-    ):
+):
     """Return user input, after validating it against arbitrary criteria.
-    
+
     The user input must satisfy all conditions in conditions_all, and one or
     more of the conditions in conditions_any.  Conditions_any is a list, with
     the first item the error string to display if none of the conditions are
-    met.  Conditions_all is a list of tuples, with each tuple having one 
+    met.  Conditions_all is a list of tuples, with each tuple having one
     condition + the associated error string to display to the user if the
     condition is not met.
-    
+
     The conditions will be inserted in 'if' statements, and must be written
     so that the 'if' statement will be true if the data is valid.  E.g.
-    
+
     if a 'Q' is needed:
     'X == "Q"'
 
     Note 1: all data input by the user is seen as a string, even if numbers are
     entered.  If the test is looking for an integer, write it as:
     'int(X)'
-    
+
     Note 2: All tests are run inside 'try' statements, so exceptions will not
     cause problems.  Any test that raises an exception is treated as a failed
     test.
-    
+
     Note 3: One idiosyncrasy of 'if' statements is that any statement that
     returns a '0' is treated as a False.  Tests must be crafted so a pass
     does not return a '0'.  E.g., if the test is intended to check that the
     data is a float, and a zero would be valid data, do not write the test as:
     'float(X)', as 'if float("O"):' will not pass.
-    
+
     """
 
     input_validated = False
 
     while not input_validated:
-        X = input(prompt)
+        X = safe_input(prompt)
         # X = input(prompt)
         validated_any = False
         validated_all = True
@@ -263,14 +273,14 @@ def get_input2(
                 if debug:
                     print('Testing condition', condition)
                 try:
-                    if eval(condition):
+                    if ast.literal_eval(condition):
                         validated_any = True
                         if debug:
                             print('Test of ', condition, 'passed')
                     else:
                         if debug:
                             print('Test of ', condition, 'failed')
-                except:
+                except BaseException:
                     if debug:
                         print('Exception during test')
                     pass
@@ -282,7 +292,7 @@ def get_input2(
                 if debug:
                     print('Testing condition', condition[0])
                 try:
-                    if eval(condition[0]):
+                    if ast.literal_eval(condition[0]):
                         if debug:
                             print('Test of ', condition[0], 'passed')
                         pass
@@ -291,7 +301,7 @@ def get_input2(
                             print('Test of ', condition[0], 'failed')
                         validated_all = False
                         print(condition[1])
-                except:
+                except BaseException:
                     if debug:
                         print('Exception during test')
                     validated_all = False
@@ -302,5 +312,3 @@ def get_input2(
         elif validated_all:
             input_validated = True
     return X
-
-

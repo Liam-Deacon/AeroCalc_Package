@@ -615,7 +615,7 @@ class Test_tas2temp(unittest.TestCase):
         Value = A.tas2temp(1000, 59, .95, temp_units='F',
                            speed_units='km/h')
         Truth = -6.664535
-        # print Value, Truth
+        # print(Value, Truth)
         self.failUnless(RE(Value, Truth) <= 1e-5)
 
 

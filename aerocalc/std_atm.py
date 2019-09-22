@@ -45,7 +45,7 @@
 #
 # 0.16   05 May 07  Reworked to use default units from default_units module.
 #
-# 0.17   04 May 08  Reworked pressure calculations to use all metric units for 
+# 0.17   04 May 08  Reworked pressure calculations to use all metric units for
 #                   internal calculations.
 #
 # 0.18   19 Nov 08  Add temp2temp_ratio and alt_temp2density_ratio functions.
@@ -113,10 +113,10 @@
 Calculates standard atmosphere parametres, using the 1976 International
 Standard Atmosphere.  The default units for the input and output are defined
 in default_units.py
-    
+
 All altitudes are geopotential altitudes (i.e. it is assumed that there is
 no variation with altitude of the acceleration due to gravity).
-    
+
 Works up to 84.852 km (278,386 ft) altitude.
 
 The 1976 US Standard Atmosphere is defined in NASA-TM-X-74335:
@@ -130,7 +130,7 @@ http://www.atmosculator.com/The%20Standard%20Atmosphere.html?
 
 from . import constants
 from . import unit_conversion as U
-import math as M
+import numpy as np
 import locale as L
 try:
     from .default_units import *
@@ -148,10 +148,6 @@ except ImportError:
     default_dynamic_viscosity_units = 'Pa s'
     default_kinematic_viscosity_units = 'm**2/s'
 
-try:
-    L.setlocale(L.LC_ALL, 'en_US')
-except:
-    pass
 
 g = constants.g  # Acceleration of gravity at 45.542 deg latitude, m/s**s
 Rd = constants.Rd  # Gas constant for dry air, J/kg K
@@ -173,7 +169,7 @@ Rho11 = (Rho0 * PR11) * (T0 / T11)
 # conditions starting at 20 km, in a region with temperature gradient
 
 T20 = T11
-PR20 = PR11 * M.exp(((-1000 * g) * (20 - 11)) / (Rd * T11))
+PR20 = PR11 * np.exp(((-1000 * g) * (20 - 11)) / (Rd * T11))
 L20 = 1  # temperature lapse rate, starting at 20,000 m, deg K/km
 P20 = PR20 * P0
 Rho20 = (Rho0 * PR20) * (T0 / T20)
@@ -196,7 +192,7 @@ Rho47 = (Rho0 * PR47) * (T0 / T47)
 # conditions starting at 51 km, in a region with temperature gradient
 
 T51 = 270.65  # Temperature at 51 km, degrees K
-PR51 = PR47 * M.exp(((-1000 * g) * (51 - 47)) / (Rd * T47))
+PR51 = PR47 * np.exp(((-1000 * g) * (51 - 47)) / (Rd * T47))
 L51 = -2.8  # temperature lapse rate, starting at 51,000 m, deg K/km
 P51 = PR51 * P0
 Rho51 = (Rho0 * PR51) * (T0 / T51)
@@ -219,35 +215,35 @@ Rho71 = (Rho0 * PR71) * (T0 / T71)
 def alt2temp(H, alt_units=default_alt_units,
              temp_units=default_temp_units):
     """Return the standard temperature for the specified altitude.  Altitude
-    units may be feet ('ft'), metres ('m'), statute miles, ('sm') or 
-    nautical miles ('nm').  Temperature units may be degrees C, F, K or R 
-    ('C', 'F', 'K' or 'R')  
-    
+    units may be feet ('ft'), metres ('m'), statute miles, ('sm') or
+    nautical miles ('nm').  Temperature units may be degrees C, F, K or R
+    ('C', 'F', 'K' or 'R')
+
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
-    Calculate the standard temperature (in default temperature units) at 
+
+    Calculate the standard temperature (in default temperature units) at
     5,000 (default altitude units):
     >>> alt2temp(5000)
     5.0939999999999941
-    
+
     Calculate the standard temperature in deg F at sea level:
     >>> alt2temp(0, temp_units = 'F')
     59.0
-    
+
     Calculate the standard temperature in deg K at 11,000 m:
     >>> alt2temp(11000, alt_units = 'm', temp_units = 'K')
     216.64999999999998
-    
+
     Calculate the standard temperature at 11 statute miles in deg R:
     >>> alt2temp(11, alt_units = 'sm', temp_units = 'R')
     389.96999999999997
-    
+
     The input value may be an expression:
     >>> alt2temp(11 * 5280, temp_units = 'R')
     389.96999999999997
-    
+
     """
 
     # Validated to 84000 m
@@ -272,7 +268,8 @@ def alt2temp(H, alt_units=default_alt_units,
     elif H <= 84.852:
         temp = T71 + (H - 71) * L71
     else:
-        raise ValueError('This function is only implemented for altitudes of 84.852 km and below.')
+        raise ValueError(
+            'This function is only implemented for altitudes of 84.852 km and below.')
 
     return U.temp_conv(temp, to_units=temp_units, from_units='K')
 
@@ -280,17 +277,17 @@ def alt2temp(H, alt_units=default_alt_units,
 def alt2temp_ratio(H, alt_units=default_alt_units):
     """
     Return the temperature ratio (temperature / standard temperature for
-    sea level).  The altitude is specified in feet ('ft'), metres ('m'), 
-    statute miles, ('sm') or nautical miles ('nm'). 
-    
+    sea level).  The altitude is specified in feet ('ft'), metres ('m'),
+    statute miles, ('sm') or nautical miles ('nm').
+
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
+
     Calculate the temperature ratio at 8,000 (default altitude units)
     >>> alt2temp_ratio(8000)
     0.94499531494013533
-    
+
     Calculate the temperature ratio at 8,000 m.
     >>> alt2temp_ratio(8000, alt_units = 'm')
     0.81953843484296374
@@ -313,25 +310,25 @@ def isa2temp(
     altitude,
     temp_units=default_temp_units,
     alt_units=default_alt_units,
-    ):
+):
     """
     Return the temperature that is a specified amount warmer or cooler
     than the standard temperature for the altitude.
-    
+
     The temperature may be in deg C, F, K or R.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
-    
+
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
-    Determine the temperature that is 10 deg (default temperature units) warmer 
+
+    Determine the temperature that is 10 deg (default temperature units) warmer
     than the standard temperature at 8,000 (default altitude units):
     >>> isa2temp(10, 8000)
     9.1503999999999905
-    
+
     Determine the temperature that is 25 degrees K cooler than the standard
     temperature at 2000 m.
     >>> isa2temp(-25, 2000, temp_units = 'K', alt_units = 'm')
@@ -357,25 +354,25 @@ def temp2isa(
     altitude,
     temp_units=default_temp_units,
     alt_units=default_alt_units,
-    ):
+):
     """
     Return the amount that the specified temperature is warmer or cooler
     than the standard temperature for the altitude.
-    
+
     The temperature may be in deg C, F, K or R.
-    
-    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'), 
+
+    The altitude may be in feet ('ft'), metres ('m'), kilometres ('km'),
     statute miles, ('sm') or nautical miles ('nm').
-    
+
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
-    Determine the ISA deviation for a temperature of 30 deg (default 
+
+    Determine the ISA deviation for a temperature of 30 deg (default
     temperature units) at an altitude of 2000 (default altitude units):
     >>> temp2isa(30, 2000)
     18.962400000000002
-    
+
     Determine the ISA deviation in degrees F for a temperature of 45 deg F
     at an altitude of 1000 m:
     >>> temp2isa(45, 1000, temp_units = 'F', alt_units = 'm')
@@ -400,7 +397,7 @@ def temp2temp_ratio(temp, temp_units=default_temp_units):
     """
     Return the temperature ratio
     """
-    theta = U.temp_conv(temp, from_units = temp_units, to_units='K') / T0
+    theta = U.temp_conv(temp, from_units=temp_units, to_units='K') / T0
 
     return theta
 
@@ -418,12 +415,12 @@ def _alt2press_ratio_gradient(
     Pb,
     Tb,
     L,
-    ):
+):
 
     # eqn from USAF TPS PEC binder, page PS1-31
 
     return (Pb / P0) * (1 + (L / Tb) * (H - Hb)) ** ((-1000 * g) / (Rd
-             * L))
+                                                                    * L))
 
 
 def _alt2press_ratio_isothermal(
@@ -431,31 +428,31 @@ def _alt2press_ratio_isothermal(
     Hb,
     Pb,
     Tb,
-    ):
+):
 
     # eqn from USAF TPS PEC binder, page PS1-26
 
-    return (Pb / P0) * M.exp((-1 * (H - Hb)) * ((1000 * g) / (Rd * Tb)))
+    return (Pb / P0) * np.exp((-1 * (H - Hb)) * ((1000 * g) / (Rd * Tb)))
 
 
 def alt2press_ratio(H, alt_units=default_alt_units):
     """
     Return the pressure ratio (atmospheric pressure / standard pressure
     for sea level).  The altitude is specified in feet ('ft'), metres ('m'),
-    statute miles, ('sm') or nautical miles ('nm').   
-    
+    statute miles, ('sm') or nautical miles ('nm').
+
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
+
     Calculate the pressure ratio at 5000 (default altitude units):
     >>> alt2press_ratio(5000)
     0.8320481158727735
-    
+
     Calculate the pressure ratio at 1000 m:
     >>> alt2press_ratio(1000, alt_units = 'm')
     0.88699304638887044
-    
+
     The functions are only implemented at altitudes of 84.852 km and lower.
     >>> alt2press_ratio(90, alt_units = 'km')
     Traceback (most recent call last):
@@ -486,31 +483,32 @@ def alt2press_ratio(H, alt_units=default_alt_units):
     if H <= 84.852:
         return _alt2press_ratio_gradient(H, 71, P71, T71, L71)
     else:
-        raise ValueError('This function is only implemented for altitudes of 84.852 km and below.')
+        raise ValueError(
+            'This function is only implemented for altitudes of 84.852 km and below.')
 
 
 def alt2press(H, alt_units=default_alt_units,
               press_units=default_press_units):
     """
-    Return the atmospheric pressure for a given altitude, with the 
+    Return the atmospheric pressure for a given altitude, with the
     altitude in feet ('ft'), metres ('m'), statute miles, ('sm') or nautical
-    miles ('nm'), and the pressure in inches of HG ('in HG'), mm of HG 
-    ('mm HG'), psi, lb per sq. ft ('psf'), pa, hpa or mb.  
-    
+    miles ('nm'), and the pressure in inches of HG ('in HG'), mm of HG
+    ('mm HG'), psi, lb per sq. ft ('psf'), pa, hpa or mb.
+
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
-    Calculate the pressure in inches of mercury at 5,000 (default altitude 
+
+    Calculate the pressure in inches of mercury at 5,000 (default altitude
     units):
     >>> alt2press(5000)
     24.895987851572702
-    
-    Calculate the pressure in pounds per square foot at 10,000 (default 
+
+    Calculate the pressure in pounds per square foot at 10,000 (default
     altitude units):
     >>> alt2press(10000, press_units = 'psf')
     1455.331692025379
-    
+
     Calculate the pressure in pascal at 20 km:
     >>> alt2press(20, press_units = 'pa', alt_units = 'km')
     5474.8885557436233
@@ -538,31 +536,31 @@ def alt2press(H, alt_units=default_alt_units,
 def pressure_alt(H, alt_setting, alt_units=default_alt_units):
     """
     Return the pressure altitude, given the barometric altitude and the
-    altimeter setting. 
-    
+    altimeter setting.
+
     Altimeter setting may have units of inches of HG, or hpa or mb.  If the
     altimeter setting value is less than 35, the units are assumed to be
     in HG, otherwise they are assumed to be hpa.  The altimeter setting must
     be in the range of 25 to 35 inches of mercury.
-    
+
     The altitude may have units of feet ('ft'), metres ('m'), statute miles,
     ('sm') or nautical miles ('nm').
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
-    Calculate the pressure altitude for 1,000 (default altitude units) 
+
+    Calculate the pressure altitude for 1,000 (default altitude units)
     barometric altitude with altimeter setting of 30.92 in HG:
     >>> pressure_alt(1000, 30.92)
     88.642443178711801
-    
-    Calculate the pressure altitude for 1,000 (default altitude units) 
+
+    Calculate the pressure altitude for 1,000 (default altitude units)
     barometric altitude with altimeter setting of 1008 mb:
     >>> pressure_alt(1000, 1008)
     1143.679844292918
-    
-    Calculate the pressure altitude in metres for 304.8 m barometric 
+
+    Calculate the pressure altitude in metres for 304.8 m barometric
     altitude with altimeter setting of 1008 mb:
     >>> pressure_alt(304.8, 1008, alt_units = 'm')
     348.59361654048143
@@ -585,9 +583,9 @@ def QNH(
     H,
     alt_units=default_alt_units,
     alt_setting_units='in HG',
-    ):
+):
     """
-    Return the altimeter setting, given the pressure altitude (HP) and the 
+    Return the altimeter setting, given the pressure altitude (HP) and the
     barometric altitude (H).
     """
 
@@ -611,16 +609,16 @@ def alt2density_ratio(H, alt_units=default_alt_units):
     """
     Return the density ratio (atmospheric density / standard density
     for sea level).  The altitude is specified in feet ('ft'), metres ('m'),
-    statute miles, ('sm') or nautical miles ('nm').  
-    
+    statute miles, ('sm') or nautical miles ('nm').
+
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
+
     Calculate the density ratio at 7,500 (default altitude units):
     >>> alt2density_ratio(7500)
     0.79825819881753035
-    
+
     Calculate the density ratio at 2 km:
     >>> alt2density_ratio(2, alt_units = 'km')
     0.8216246960994622
@@ -634,29 +632,29 @@ def alt2density_ratio(H, alt_units=default_alt_units):
 def alt2density(H, alt_units=default_alt_units,
                 density_units=default_density_units):
     """
-    Return the density given the pressure altitude.  The altitude is 
-    specified in feet ('ft'), metres ('m'), statute miles, ('sm') or 
+    Return the density given the pressure altitude.  The altitude is
+    specified in feet ('ft'), metres ('m'), statute miles, ('sm') or
     nautical miles ('nm').
-    
-    The desired density units are specified as 'lb/ft**3', 'slug/ft**3' or 
-    'kg/m**3'.  
-    
+
+    The desired density units are specified as 'lb/ft**3', 'slug/ft**3' or
+    'kg/m**3'.
+
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
+
     Calculate the density in lb / ft cubed at 7,500 (default altitude units):
     >>> alt2density(7500)
     0.061046199847730374
-    
+
     Calculate the density in slugs / ft cubed at 5,000 (default altitude units):
     >>> alt2density(5000, density_units = 'slug/ft**3')
     0.0020480982157718704
-    
+
     Calculate the density in kg / m cubed at 0 (default altitude units:
     >>> alt2density(0, density_units = 'kg/m**3')
     1.2250000000000001
-    
+
     Calculate the density in kg / m cubed at 81,000 m:
     >>> alt2density(81000, density_units = 'kg/m**3', alt_units = 'm')
     1.3320480184052337e-05
@@ -670,12 +668,14 @@ def alt2density(H, alt_units=default_alt_units,
     return U.density_conv(density, from_units='kg/m**3',
                           to_units=density_units)
 
-def alt_temp2density_ratio(H, temp, alt_units=default_alt_units, temp_units=default_temp_units):
+
+def alt_temp2density_ratio(
+        H, temp, alt_units=default_alt_units, temp_units=default_temp_units):
     """
     Return the density ratio (atmospheric density / standard density
     for sea level).  The altitude is specified in feet ('ft'), metres ('m'),
-    statute miles, ('sm') or nautical miles ('nm').  
-    
+    statute miles, ('sm') or nautical miles ('nm').
+
     The temperature may be in deg C, F, K or R.
 
     If the units are not specified, the units in default_units.py are used.
@@ -686,7 +686,7 @@ def alt_temp2density_ratio(H, temp, alt_units=default_alt_units, temp_units=defa
     press_ratio = alt2press_ratio(H, alt_units=alt_units)
     temp_ratio = temp2temp_ratio(temp, temp_units=temp_units)
     density_ratio = press_ratio / temp_ratio
-    
+
     return density_ratio
 
 # #############################################################################
@@ -702,10 +702,10 @@ def _density2alt_gradient(
     Hb,
     Tb,
     L,
-    ):
+):
 
     return Hb + (Tb / L) * ((Rho / Rhob) ** (-1 / ((1000 * g) / (Rd * L)
-                             + 1)) - 1)
+                                                   + 1)) - 1)
 
 
 def _density2alt_isothermal(
@@ -713,30 +713,30 @@ def _density2alt_isothermal(
     Rhob,
     Hb,
     Tb,
-    ):
+):
 
-    return Hb - ((Rd * Tb) * M.log(Rho / Rhob)) / (1000 * g)
+    return Hb - ((Rd * Tb) * np.log(Rho / Rhob)) / (1000 * g)
 
 
 def density2alt(Rho, density_units=default_density_units,
                 alt_units=default_alt_units):
     """
     Return the altitude corresponding to the specified density, with
-    density in 'lb/ft**3', 'slug/ft**3' or 'kg/m**3'.  
-    
-    The altitude is specified in feet ('ft'), metres ('m'), statute miles, 
+    density in 'lb/ft**3', 'slug/ft**3' or 'kg/m**3'.
+
+    The altitude is specified in feet ('ft'), metres ('m'), statute miles,
     ('sm') or nautical miles ('nm').
-    
+
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
-    Calculate the altitude in default altitude units where the density is 
+
+    Calculate the altitude in default altitude units where the density is
     0.056475 in default density units:
     >>> density2alt(.056475)
     9999.8040934937271
-    
-    Calculate the altitude in metres where the density is 0.018012 kg / m 
+
+    Calculate the altitude in metres where the density is 0.018012 kg / m
     cubed:
     >>> density2alt(.018012, alt_units = 'm', density_units = 'kg/m**3')
     29999.978688508152
@@ -763,7 +763,8 @@ def density2alt(Rho, density_units=default_density_units,
         H = _density2alt_gradient(Rho, Rho71, 71, T71, L71)
 
     if H > 84.852:
-        raise ValueError('This function is only implemented for altitudes of 84.852 km and below.')
+        raise ValueError(
+            'This function is only implemented for altitudes of 84.852 km and below.')
 
     return U.length_conv(H, from_units='km', to_units=alt_units)
 
@@ -771,22 +772,22 @@ def density2alt(Rho, density_units=default_density_units,
 def density_ratio2alt(DR, alt_units=default_alt_units):
     """
     Return the altitude for the specified density ratio. The altitude is in
-    feet ('ft'), metres ('m'), statute miles, ('sm') or nautical miles 
-    ('nm'). 
-    
+    feet ('ft'), metres ('m'), statute miles, ('sm') or nautical miles
+    ('nm').
+
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
-    Calculate the altitude in default altitude units where the density ratio is 
+
+    Calculate the altitude in default altitude units where the density ratio is
     1:
     >>> density_ratio2alt(1)
     0.0
-    
+
     Calculate the altitude in feet where the density ratio is 0.5:
     >>> density_ratio2alt(.5)
     21859.50324995652
-    
+
     Calculate the altitude in km where the density ratio is 0.1
     >>> density_ratio2alt(.1, alt_units = 'km')
     17.9048674520646
@@ -813,70 +814,70 @@ def density_alt(
     RH=0.0,
     alt_units=default_alt_units,
     temp_units=default_temp_units,
-    ):
+):
     """
-    Return density altitude, given the pressure altitude and the 
-    temperature with altitudes in units of feet ('ft'), metres ('m'), 
+    Return density altitude, given the pressure altitude and the
+    temperature with altitudes in units of feet ('ft'), metres ('m'),
     statute miles, ('sm') or nautical miles ('nm'), and temperature in units
     of deg C, F, K or R ('C', 'F', 'K' or 'R').
-    
+
     Mandatory parametres:
     H = altitude
     T = temperature
-    
+
     Optional parametres:
     alt_setting = altimeter setting (defaults to 29.9213 if not provided
     DP = dew point
     RH = relative humidity
-    alt_units = units for the altitude.  'ft', 'm', or 'km'.  
-    temp_units = units for the temperature and dew point.  'C', 'F', 'K' 
+    alt_units = units for the altitude.  'ft', 'm', or 'km'.
+    temp_units = units for the temperature and dew point.  'C', 'F', 'K'
                  or 'R'.
-    
-    The altimeter setting units are assumed to be inches of HG, unless the 
+
+    The altimeter setting units are assumed to be inches of HG, unless the
     value is greater than 35.  In this case the units are assumed to be mb.
-    
-    If the dew point or relative humidity are not specified, the air is 
+
+    If the dew point or relative humidity are not specified, the air is
     assumed to be completely dry.  If both the dew point and relative humidity
     are specified, the relative humidity value is ignored.
-    
+
     If the units are not specified, the units in default_units.py are used.
 
     The method is from: http://wahiduddin.net/calc/density_altitude.htm
-    
+
     Examples:
-    
-    Calculate the density altitude in default altitude units for a pressure 
-    altitude of 7000 default altitude units and a temperature of 15 deg 
-    (default temperature units).  The altimeter setting is not specified, so it 
+
+    Calculate the density altitude in default altitude units for a pressure
+    altitude of 7000 default altitude units and a temperature of 15 deg
+    (default temperature units).  The altimeter setting is not specified, so it
     defaults to standard pressure of 29.9213 in HG or 1013.25 mb:
     >>> density_alt(7000, 15)
     8595.3122796056014
-    
-    Calculate the density altitude in default altitude units for a pressure 
-    altitude of 7000 default altitude units and a temperature of 85 deg F.  
-    The altimeter setting is not specified, so it defaults to standard pressure 
-    of 29.9213 in HG or 1013.25 mb.  The dew point and relative humidity are 
+
+    Calculate the density altitude in default altitude units for a pressure
+    altitude of 7000 default altitude units and a temperature of 85 deg F.
+    The altimeter setting is not specified, so it defaults to standard pressure
+    of 29.9213 in HG or 1013.25 mb.  The dew point and relative humidity are
     not specified, so the air is assumed to be dry:
     >>> density_alt(7000, 85, temp_units = 'F')
     10159.073046375761
-    
-    Calculate the density altitude in default altitude units for a pressure 
+
+    Calculate the density altitude in default altitude units for a pressure
     altitude of 7000 default altitude units, an altimeter setting of 29.80 and
     a temperature of 85 deg F and a dew point of 55 deg F:
     >>> density_alt(7000, 85, 29.80, 55, temp_units = 'F')
     10522.777736545509
-    
-    Calculate the density altitude in metres for a pressure altitude of 
-    2000 m, an altimeter setting of 1010 mb,  a temperature of 15 deg (default 
+
+    Calculate the density altitude in metres for a pressure altitude of
+    2000 m, an altimeter setting of 1010 mb,  a temperature of 15 deg (default
     temperature units) and a relative humidity of 50%:
     >>> density_alt(2000, 15, 1010, alt_units = 'm', RH = 0.5)
     2529.8235607713582
-    
-    The dew point may be specified in one of two ways: as the fourth 
+
+    The dew point may be specified in one of two ways: as the fourth
     argument on the command line, or via the keyword argument DP.
     >>> density_alt(2000, 15, 1010, alt_units = 'm', DP = 5)
     2530.7533211614682
-        
+
     The relative humidity must be in the range of 0 to 1:
     >>> density_alt(2000, 15, 1010, alt_units = 'm', RH = 1.1)
     Traceback (most recent call last):
@@ -911,8 +912,8 @@ def density_alt(
 
 
 def _sat_press(T):
-    """ 
-    Return the saturation pressure in mb of the water vapour, given 
+    """
+    Return the saturation pressure in mb of the water vapour, given
     temperature in deg C.  Equation from:
     http://wahiduddin.net/calc/density_altitude.htm
     """
@@ -930,7 +931,7 @@ def _sat_press(T):
     c9 = -0.30994571e-19
 
     p = c0 + T * (c1 + T * (c2 + T * (c3 + T * (c4 + T * (c5 + T * (c6
-                   + T * (c7 + T * (c8 + T * c9))))))))
+                                                                    + T * (c7 + T * (c8 + T * c9))))))))
     sat_press = eso / p ** 8
     return sat_press
 
@@ -941,34 +942,34 @@ def sat_press(
     RH=0.0,
     temp_units=default_temp_units,
     press_units=default_press_units,
-    ):
+):
     """
-    Return the saturated vapour pressure of water.  Either the dew point, or 
+    Return the saturated vapour pressure of water.  Either the dew point, or
     the temperature and the relative humidity must be specified.  If both the
     dew point and relative humidity are specified, the relative humidity value
     is ignored.
-    
+
     If the temperature and dew point are both specified, the dew point cannot
     be greater than the temperature:
-    
+
     If the units are not specified, the units in default_units.py are used.
 
     >>> sat_press(T=10, DP=11)
     Traceback (most recent call last):
       File '<stdin>', line 1, in <module>
       File 'std_atm.py', line 795, in sat_press
-        raise ValueError, 'The dew point cannot be greater than the temperature.'
+        raise ValueError('The dew point cannot be greater than the temperature.')
     ValueError: The dew point cannot be greater than the temperature.
-    
+
     Dew point is 11 deg (default temperature units).  Find the water vapour
     pressure in default pressure units:
     >>> sat_press(DP=11)
     0.38741015927568667
-    
+
     Dew point is 65 deg F.  Find the water vapour pressure in default pressure units:
     >>> sat_press(DP=65, temp_units = 'F')
     0.62207710701956165
-    
+
     Dew point is 212 deg F (the boiling point of water at sea level).
     Find the water vapour pressure in lb per sq. inch:
     >>> sat_press(DP=212, temp_units = 'F', press_units = 'psi')
@@ -986,7 +987,8 @@ def sat_press(
 
         if T != 'FALSE':
             if DP > T:
-                raise ValueError('The dew point cannot be greater than the temperature.')
+                raise ValueError(
+                    'The dew point cannot be greater than the temperature.')
 
         DP = U.temp_conv(DP, from_units=temp_units, to_units='C')
 
@@ -996,16 +998,19 @@ def sat_press(
     else:
 
         if RH == 'FALSE':
-            raise ValueError('Either DP (dew point) or RH (relative humidity) must be specified.')
+            raise ValueError(
+                'Either DP (dew point) or RH (relative humidity) must be specified.')
 
     # relative humidity is specified
     # confirm relative humidity is in range
 
         if RH < 0 or RH > 1:
-            raise ValueError('The relative humidity must be in the range of 0 to 1.')
+            raise ValueError(
+                'The relative humidity must be in the range of 0 to 1.')
 
         if T == 'FALSE':
-            raise ValueError('If the relative humidity is specified, the temperature must also be specified.')
+            raise ValueError(
+                'If the relative humidity is specified, the temperature must also be specified.')
 
         T = U.temp_conv(T, from_units=temp_units, to_units='C')
 
@@ -1023,7 +1028,7 @@ def dry_press(
     alt_setting=P0 / 100.,
     alt_units=default_alt_units,
     press_units=default_press_units,
-    ):
+):
     """
     Returns dry air pressure, i.e. the total air pressure, less the water
     vapour pressure.
@@ -1041,7 +1046,7 @@ def density_alt2temp(
     press_alt,
     alt_units=default_alt_units,
     temp_units=default_temp_units,
-    ):
+):
     """
     Return temperature to achieve a desired density altitude.
 
@@ -1066,7 +1071,7 @@ def density_alt2temp(
 
     # keep iterating until da is within 1 ft of desired value
 
-    while M.fabs(da_guess - density_alt_seek) > 1:
+    while np.fabs(da_guess - density_alt_seek) > 1:
         if da_guess > density_alt_seek:
             high = guess
         else:
@@ -1089,7 +1094,7 @@ def density_alt_table(
     multi_units=False,
     file='',
     format='text',
-    ):
+):
     """
     Return a text or html table of required temperature vs pressure altitude.
 
@@ -1101,18 +1106,18 @@ def density_alt_table(
         line_buffer.append('Pressure altitudes and temperatures for a density '
                            )
         line_buffer.append('altitude of ' + str(density_alt_seek) + ' '
-                            + alt_units)
+                           + alt_units)
         line_buffer.append('(assuming dry air)\n')
         if multi_units:
             line_buffer.append(' Pressure    Temp      Temp')
             line_buffer.append(' Altitude')
             line_buffer.append('   (' + alt_units
-                                + ')     (deg C)   (deg F)')
+                               + ')     (deg C)   (deg F)')
         else:
             line_buffer.append(' Pressure    Temp')
             line_buffer.append(' Altitude')
             line_buffer.append('   (' + alt_units + ')     (deg '
-                                + temp_units + ')')
+                               + temp_units + ')')
     elif format == 'html':
         print('creating html')
     else:
@@ -1123,20 +1128,20 @@ def density_alt_table(
                          density_alt_seek + alt_range / 2. + alt_inc,
                          alt_inc):
             temp_c = density_alt2temp(density_alt_seek, alt,
-                    alt_units=alt_units)
+                                      alt_units=alt_units)
             temp_f = U.temp_conv(temp_c, from_units='C', to_units='F')
             alt_str = L.format('%.*f', (0, alt), grouping=True)
             temp_c_str = '%.1f' % temp_c
             temp_f_str = '%.1f' % temp_f
             line_buffer.append(alt_str.rjust(6) + temp_c_str.rjust(11)
-                                + temp_f_str.rjust(10))
+                               + temp_f_str.rjust(10))
     else:
         for alt in range(max(density_alt_seek - alt_range / 2., 0),
                          density_alt_seek + alt_range / 2. + alt_inc,
                          alt_inc):
             alt_str = L.format('%.*f', (0, alt), grouping=True)
             temp_str = '%.1f' % density_alt2temp(density_alt_seek, alt,
-                    temp_units=temp_units, alt_units=alt_units)
+                                                 temp_units=temp_units, alt_units=alt_units)
             line_buffer.append(alt_str.rjust(6) + temp_str.rjust(11))
 
     if file != '':
@@ -1162,10 +1167,10 @@ def _press2alt_gradient(
     Hb,
     Tb,
     L,
-    ):
+):
 
     return Hb + (Tb / L) * ((P / Pb) ** (((-1 * Rd) * L) / (1000 * g))
-                             - 1)
+                            - 1)
 
 
 def _press2alt_isothermal(
@@ -1173,9 +1178,9 @@ def _press2alt_isothermal(
     Pb,
     Hb,
     Tb,
-    ):
+):
 
-    return Hb - ((Rd * Tb) * M.log(P / Pb)) / (1000 * g)
+    return Hb - ((Rd * Tb) * np.log(P / Pb)) / (1000 * g)
 
 
 def press2alt(P, press_units=default_press_units,
@@ -1183,31 +1188,31 @@ def press2alt(P, press_units=default_press_units,
     """
     Return the altitude corresponding to the specified pressure, with
     pressure in inches of HG, mm of HG, psi, psf (lb per sq. ft), pa, hpa or
-    mb. 
-    
-    The altitude is in units of feet ('ft'), metres ('m'), statute miles, 
+    mb.
+
+    The altitude is in units of feet ('ft'), metres ('m'), statute miles,
     ('sm') or nautical miles ('nm')
-    
+
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
+
     Calculate the pressure altitude in feet for a pressure of 31.0185 inches
     of HG:
     >>> press2alt(31.0185)
     -999.96020165971788
-    
-    Calculate the pressure altitude in feet for a pressure of 
+
+    Calculate the pressure altitude in feet for a pressure of
     1455.33 lb sq. ft:
     >>> press2alt(1455.33, press_units = 'psf')
     10000.029960829057
-    
-    Calculate the pressure altitude in metres for a pressure of 
+
+    Calculate the pressure altitude in metres for a pressure of
     90.3415 mm HG:
     >>> press2alt(90.3415, press_units = 'mm HG', alt_units = 'm')
     15000.032231346277
-    
-    Calculate the pressure altitude in metres for a pressure of 
+
+    Calculate the pressure altitude in metres for a pressure of
     1171.86 pascal:
     >>> press2alt(1171.86, press_units = 'pa', alt_units = 'm')
     30000.036588693849
@@ -1233,25 +1238,26 @@ def press2alt(P, press_units=default_press_units,
         H = _press2alt_gradient(P, P71, 71, T71, L71)
 
     if H > 84.852:
-        raise ValueError('This function is only implemented for altitudes of 84.852 km and below.')
+        raise ValueError(
+            'This function is only implemented for altitudes of 84.852 km and below.')
 
     return U.length_conv(H, from_units='km', to_units=alt_units)
 
 
 def press_ratio2alt(PR, alt_units=default_alt_units):
     """
-    Return the pressure ratio for the specified altitude.  The altitude is 
-    specified in feet ('ft'), metres ('m'), statute miles, ('sm') or 
-    nautical miles ('nm').  
-    
+    Return the pressure ratio for the specified altitude.  The altitude is
+    specified in feet ('ft'), metres ('m'), statute miles, ('sm') or
+    nautical miles ('nm').
+
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
+
     Calculate the altitude in feet where the pressure ratio is 0.5:
     >>> press_ratio2alt(.5)
     17969.990746028907
-    
+
     Calculate the altitude in metres where the pressure ratio is 0.1:
     >>> press_ratio2alt(.1, alt_units = 'm')
     16096.249927559486
@@ -1273,20 +1279,20 @@ def press_ratio2alt(PR, alt_units=default_alt_units):
 def temp2speed_of_sound(temp, temp_units=default_temp_units,
                         speed_units=default_speed_units):
     """
-    Return the speed of sound, given the air temperature.  
-    
+    Return the speed of sound, given the air temperature.
+
     The temperature units may be deg C, F, K or R ('C', 'F', 'K' or 'R').
-    
+
     The speed units may be 'kt', 'mph', 'km/h', 'm/s' and 'ft/s'.
 
     If the units are not specified, the units in default_units.py are used.
-    
+
     Examples:
-    
+
     Determine speed of sound in knots at 15 deg (default temperature units):
     >>> temp2speed_of_sound(15)
     661.47882487301808
-    
+
     Determine speed of sound in mph at 120 deg F:
     >>> temp2speed_of_sound(120, speed_units = 'mph', temp_units = 'F')
     804.73500154991291
@@ -1296,7 +1302,7 @@ def temp2speed_of_sound(temp, temp_units=default_temp_units,
 
     temp = U.temp_conv(temp, from_units=temp_units, to_units='K')
 
-    speed_of_sound = M.sqrt((1.4 * Rd) * temp)
+    speed_of_sound = np.sqrt((1.4 * Rd) * temp)
     speed_of_sound = U.speed_conv(speed_of_sound, from_units='m/s',
                                   to_units=speed_units)
 
@@ -1309,49 +1315,56 @@ def temp2speed_of_sound(temp, temp_units=default_temp_units,
 #
 #############################################################################
 
-def temp2dynamic_viscosity(T, temp_units=default_temp_units, 
-    dynamic_viscosity_units=default_dynamic_viscosity_units):
+
+def temp2dynamic_viscosity(T, temp_units=default_temp_units,
+                           dynamic_viscosity_units=default_dynamic_viscosity_units):
     """
     Return dynamic viscosity given the air temperature.
-    
+
     Formula from US Standard Atmosphere, 1976 section 1.3.11 on page 19.
     """
     T = U.temp_conv(T, temp_units, 'K')
     u = 1.458e-6 * T**1.5 / (T + 110.4)
-    
+
     u = U.dynamic_viscosity_conv(u, 'Pa s', dynamic_viscosity_units)
-    
+
     return u
 
+
 def alt2dynamic_viscosity(H, alt_units=default_alt_units,
-    dynamic_viscosity_units=default_dynamic_viscosity_units):
+                          dynamic_viscosity_units=default_dynamic_viscosity_units):
     """
     Return dynamic viscosity given the altitude.
     """
     T = alt2temp(H, alt_units=alt_units)
     u = temp2dynamic_viscosity(T)
-    
+
     # add unit conversion for result
-    u = U.dynamic_viscosity_conv(u, 'Pa s', dynamic_viscosity_units) 
-       
+    u = U.dynamic_viscosity_conv(u, 'Pa s', dynamic_viscosity_units)
+
     return u
-    
-def kinematic_viscosity(density, dynamic_viscosity, 
-    kinematic_viscosity_units=default_kinematic_viscosity_units, 
-    density_units=default_density_units, 
-    dynamic_viscosity_units=default_dynamic_viscosity_units):
+
+
+def kinematic_viscosity(density, dynamic_viscosity,
+                        kinematic_viscosity_units=default_kinematic_viscosity_units,
+                        density_units=default_density_units,
+                        dynamic_viscosity_units=default_dynamic_viscosity_units):
     """
     Return kinematic viscosity given density and dynamic viscosity.
     """
     density = U.density_conv(density, density_units, 'kg/m**3')
-    dynamic_viscosity = U.dynamic_viscosity_conv(dynamic_viscosity, dynamic_viscosity_units, 'Pa s')
+    dynamic_viscosity = U.dynamic_viscosity_conv(
+        dynamic_viscosity, dynamic_viscosity_units, 'Pa s')
     kinematic_viscosity = dynamic_viscosity / density
-    
-    kinematic_viscosity = U.kinematic_viscosity_conv(kinematic_viscosity, 'm**2/s', kinematic_viscosity_units)
-    
+
+    kinematic_viscosity = U.kinematic_viscosity_conv(
+        kinematic_viscosity, 'm**2/s', kinematic_viscosity_units)
+
     return kinematic_viscosity
 
-def alt2kinematic_viscosity(H, T='std', alt_units=default_alt_units, temp_units=default_temp_units, kinematic_viscosity_units=default_kinematic_viscosity_units):
+
+def alt2kinematic_viscosity(H, T='std', alt_units=default_alt_units, temp_units=default_temp_units,
+                            kinematic_viscosity_units=default_kinematic_viscosity_units):
     """
     Return kinematic viscosity, given altitude and an optional temperature input.
     """
@@ -1371,12 +1384,13 @@ def alt2kinematic_viscosity(H, T='std', alt_units=default_alt_units, temp_units=
 
     return v
 
-def Re(V, L, KV, speed_units=default_speed_units, length_units=default_length_units, 
-    #kinematic_viscosity_units=default_kinematic_viscosity_units
-    ):
+
+def Re(V, L, KV, speed_units=default_speed_units, length_units=default_length_units,
+       # kinematic_viscosity_units=default_kinematic_viscosity_units
+       ):
     """
     Return Reynold's number, given velocity, characteristic length and kinematic viscosity'
-    
+
     V  = velocity
     L  = characteristic length
     KV = kinematic viscosity
@@ -1384,12 +1398,12 @@ def Re(V, L, KV, speed_units=default_speed_units, length_units=default_length_un
     V = U.speed_conv(V, speed_units, 'm/s')
     L = U.length_conv(L, length_units, 'm')
     # KV = U.kinematic_viscosity_conv(KV, kinematic_viscosity_units, '??')
-    
+
     Re = V * L / KV
-    
+
     return Re
-    
-    
+
+
 if __name__ == '__main__':
 
     # run doctest to check the validity of the examples in the doc strings.

@@ -37,12 +37,11 @@
 
 """
 Various constants for use by other modules.
-"""  
+"""
 
-g = 9.80665 # Acceleration of gravity at 45.542 deg latitude, m/s**s
+g = 9.80665  # Acceleration of gravity at 45.542 deg latitude, m/s**s
 Rd = 287.05307  # Gas constant for dry air, J/kg K
 P0 = 101325.  # Pressure at sea level, pa
 T0 = 288.15  # Temperature at sea level, degrees K
 Rho0 = 1.2250  # Density at sea level, kg/m**3
 A0 = 340.2941  # speed of sound at sea level, std day, m/s
-

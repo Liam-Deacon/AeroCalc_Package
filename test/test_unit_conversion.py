@@ -156,7 +156,7 @@ class Test_power_conv(unittest.TestCase):
     # def test_05(self):
     #     Value = U.power_conv(0.017584264, from_units='kW', to_units='BTU/hr')
     #     Truth = 60
-    #     print Value, Truth
+    #     print(Value, Truth)
     #     self.failUnless(RE(Value, Truth) <= 1e-5)
     #
     # def test_06(self):
@@ -465,4 +465,3 @@ class Test_mass_conv(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main(verbosity=5)
-

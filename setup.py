@@ -22,7 +22,7 @@ setup(
     name='aero-calc',
     version='0.13.2',
     description='Aeronautical Engineering Calculations',
-    install_requires=['setuptools'],
+    install_requires=['setuptools', 'ast', 'clipboard', 'numpy'],
     long_description='''
 AeroCalc is a pure python package that performs various aeronautical
 engineering calculations.  Currently it provides airspeed conversions,
@@ -43,6 +43,5 @@ and unit conversions.''',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Scientific/Engineering :: Atmospheric Science',
-        ],
-
-    )
+    ]
+)

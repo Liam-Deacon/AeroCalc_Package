@@ -32,7 +32,7 @@
 # Version History:
 # vers     date     Notes
 # 0.10   09 May 08  First public release.
-# 0.11   30 Jun 09  Python 3.0 compatibility.  Removed "from __future__ 
+# 0.11   30 Jun 09  Python 3.0 compatibility.  Removed "from __future__
 #                   import division"
 # #############################################################################
 
@@ -42,7 +42,7 @@ Various functions related to drag coefficients.
 
 # import airspeed as A
 from . import cl
-import math as M
+import numpy as np
 # import std_atm as SA
 from . import unit_conversion as U
 from . import constants
@@ -78,25 +78,25 @@ def cl2cd(Cl, Cd0, AR, e):
     """
     Returns drag coefficient, given lift coefficient, profile drag coefficient
     aspect ratio and span efficiency.
-    
+
     Cl  = lift coefficient
     Cd0 = profile drag coefficient (the drag coefficient at zero lift)
     AR  = aspect ratio (the square of wing span / wing area, which for a
           rectangular wing is equivalent to wing span / wing chord).
     e   = span efficiency
-    
-    This representation of drag does not account for wave drag, so it is not 
-    valid at high speed.  It also is only valid in the range of angle of 
-    attack where lift changes linearly with angle of attack.  It does not 
+
+    This representation of drag does not account for wave drag, so it is not
+    valid at high speed.  It also is only valid in the range of angle of
+    attack where lift changes linearly with angle of attack.  It does not
     account for the effect of trim drag, so the predicted drag takes no
     account for aircraft centre of gravity.
-    
+
     Example:
     >>> cl2cd(1.2, 0.0221, 4.8, 0.825)
     0.13784904952137844
     """
 
-    Cd = Cd0 + Cl ** 2 / ((M.pi * e) * AR)
+    Cd = Cd0 + Cl ** 2 / ((np.pi * e) * AR)
 
     return Cd
 
@@ -117,11 +117,11 @@ def cd2drag(
     speed_units=default_speed_units,
     area_units=default_area_units,
     drag_units=default_weight_units,
-    ):
+):
     """
     Returns the drag, given coefficient of drag, equivalent airspeed, and wing
     area.
-    
+
     Example:
     >>> cd2drag(.138, 100, 10, speed_units='km/h', area_units='m**2',\
     drag_units='N')
@@ -159,24 +159,23 @@ def eas2drag(
     weight_units=default_weight_units,
     area_units=default_area_units,
     drag_units=default_weight_units,
-    ):
-
+):
     """
-    Returns drag, given EAS, weight, wing area, profile drag coefficient, 
+    Returns drag, given EAS, weight, wing area, profile drag coefficient,
     aspect ratio, span efficiency and load factor.
-    
+
     Cl  = lift coefficient
     Cd0 = profile drag coefficient (the drag coefficient at zero lift)
     AR  = aspect ratio (the square of wing span / wing area, which for a
           rectangular wing is equivalent to wing span / wing chord).
     e   = span efficiency
 
-    This representation of drag does not account for wave drag, so it is not 
-    valid at high speed.  It also is only valid in the range of angle of 
-    attack where lift changes linearly with angle of attack.  It does not 
+    This representation of drag does not account for wave drag, so it is not
+    valid at high speed.  It also is only valid in the range of angle of
+    attack where lift changes linearly with angle of attack.  It does not
     account for the effect of trim drag, so the predicted drag takes no
     account for aircraft centre of gravity.
-    
+
     Example:
     >>> eas2drag(120, 700, 110, 0.0221, 4.8, 0.825, speed_units='mph', \
     weight_units='kg', area_units='ft**2', drag_units='lb')
@@ -191,7 +190,7 @@ def eas2drag(
         speed_units,
         weight_units,
         area_units,
-        )
+    )
     Cd = cl2cd(Cl, Cd0, AR, e)
     drag = cd2drag(
         Cd,
@@ -200,16 +199,19 @@ def eas2drag(
         speed_units,
         area_units,
         drag_units,
-        )
+    )
 
     return drag
 
-def drag2drag_area(drag, eas, drag_units=default_weight_units, speed_units=default_speed_units):
+
+def drag2drag_area(drag, eas, drag_units=default_weight_units,
+                   speed_units=default_speed_units):
     """
     Returns equivalent flat plate area given drag and EAS.
     """
 
     return
+
 
 if __name__ == '__main__':  # pragma: no cover
 
@@ -218,4 +220,3 @@ if __name__ == '__main__':  # pragma: no cover
     import doctest
     import sys
     doctest.testmod(sys.modules[__name__])
-

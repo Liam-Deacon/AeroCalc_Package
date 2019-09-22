@@ -43,14 +43,14 @@
 # 0.24   29 Nov 08  Added inches of water to press_conv.
 # 0.25   07 Dec 08  Added mm and cm to length_conv.
 # 0.26   29 Jun 09  Added cm H20 to press_conv
-# 0.27   30 Jun 09  Made compatible with python 3.0.  Tested on python 2.5, 
+# 0.27   30 Jun 09  Made compatible with python 3.0.  Tested on python 2.5,
 #                   2.6 and 3.0
 # 0.28   15 Apr 10  Rename len_conv to length_conv
 #                   Add viscosity conversions
 # 0.29   07 Sep 13  Add ft/mn to speed_conv
 # #############################################################################
 
-""" 
+"""
 Convert between various units.
 """
 
@@ -72,17 +72,17 @@ except ImportError:
 
 def area_conv(A, from_units=default_area_units,
               to_units=default_area_units):
-    """ 
+    """
     Convert area values between ft**2, in**2, m**2, km**2, sm**2 and nm**2.
 
     The incoming value is first converted to ft**2, then it is converted to
     desired return value.
-    
+
 
     The units default to those specified in default_units.py
-    
+
     Examples:
-    
+
     Convert 1 ft**2 to inches**2, with ft**2 already defined as the default
     units:
     >>> area_conv(1, to_units = 'in**2')
@@ -111,7 +111,9 @@ def area_conv(A, from_units=default_area_units,
     elif from_units == 'nm**2':
         A *= (1852 / 0.3048) ** 2
     else:
-        raise ValueError('from_units must be "ft**2" or "in**2" or "m**2" or "km**2" or "sm**2" (square statute miles) or "nm**2" (square nautical miles).')
+        raise ValueError('from_units must be "ft**2" or "in**2" or "m**2" '
+                         'or "km**2" or "sm**2" (square statute miles) or '
+                         '"nm**2" (square nautical miles).')
 
     if to_units == 'ft**2':
         return A
@@ -126,21 +128,23 @@ def area_conv(A, from_units=default_area_units,
     elif to_units == 'nm**2':
         return A * (0.3048 / 1852) ** 2
     else:
-        raise ValueError('from_units must be "ft**2" or "in**2" or "m**2" or "km**2" or "sm**2" (square statute miles) or "nm**2" (square nautical miles).')
+        raise ValueError('from_units must be "ft**2" or "in**2" or "m**2" or '
+                         '"km**2" or "sm**2" (square statute miles) or '
+                         '"nm**2" (square nautical miles).')
 
 
 def density_conv(D, from_units, to_units):
-    """ 
+    """
     Convert density values between kg/m**3, slug/ft**3 and lb/ft**3.
 
-    The incoming value is first converted to kg/m**3, then it is converted 
+    The incoming value is first converted to kg/m**3, then it is converted
     to desired return value.
-    
-    There are no default units. Both the from_units and the to_units must 
+
+    There are no default units. Both the from_units and the to_units must
     be specified.
-    
+
     Example:
-    
+
     Convert 1.225 kg per metre cubed to lb per foot cubed:
     >>> density_conv(1.225, from_units = 'kg/m**3', to_units = 'lb/ft**3')
     0.076474253491112101
@@ -154,7 +158,8 @@ def density_conv(D, from_units, to_units):
     elif from_units == 'lb/ft**3':
         D *= 16.018463
     else:
-        raise ValueError('from_units must be one of "kg/m**3", "slug/ft**3" and "lb/ft**3".')
+        raise ValueError('from_units must be one of: '
+                         '"kg/m**3", "slug/ft**3" and "lb/ft**3".')
 
     if to_units == 'kg/m**3':
         return D
@@ -163,14 +168,15 @@ def density_conv(D, from_units, to_units):
     elif to_units == 'lb/ft**3':
         return D / 16.018463
     else:
-        raise ValueError('to_units must be one of "kg/m**3", "slug/ft**3" and "lb/ft**3".')
+        raise ValueError(
+            'to_units must be one of "kg/m**3", "slug/ft**3" and "lb/ft**3".')
 
 
 def force_conv(F, from_units=default_weight_units,
                to_units=default_weight_units):
     """
     Convert force values between lb force and N.
-    
+
     The incoming value is first converted to N, then it is converted to the
     desired return value.
     """
@@ -193,17 +199,17 @@ def force_conv(F, from_units=default_weight_units,
 
 
 def length_conv(L, from_units=default_length_units,
-             to_units=default_length_units):
-    """ 
+                to_units=default_length_units):
+    """
     Convert length values between ft, in, mm, cm, m, km, sm and nm.
 
     The incoming value is first converted to ft, then it is converted to
     desired return value.
-    
+
     The units default to those specified in default_units.py
-    
+
     Examples:
-    
+
     Convert 5280 ft to statute miles, with feet already defined as the default
     units:
     >>> length_conv(5280, to_units = 'sm')
@@ -236,7 +242,8 @@ def length_conv(L, from_units=default_length_units,
     elif from_units == 'in':
         L /= 12.
     else:
-        raise ValueError('from_units must be "ft", "in", "mm", "cm", "m", "km", "sm" (statute miles) or "nm" (nautical miles).')
+        raise ValueError('from_units must be "ft", "in", "mm", "cm", "m", "km"'
+                         ', "sm" (statute miles) or "nm" (nautical miles).')
 
     if to_units == 'ft':
         return L
@@ -255,19 +262,21 @@ def length_conv(L, from_units=default_length_units,
     elif to_units == 'in':
         return L * 12.
     else:
-        raise ValueError('to_units must be "ft", "in", "mm", "cm", "m", "km", "sm" (statute miles) or "nm" (nautical miles).')
+        raise ValueError(
+            'to_units must be "ft", "in", "mm", "cm", "m", "km", "sm" '
+            '(statute miles) or "nm" (nautical miles).')
 
 
 def power_conv(P, from_units=default_power_units,
                to_units=default_power_units):
     """
-    Convert power values between horsepower, ft-lb/mn,  ft-lb/s, watts, 
+    Convert power values between horsepower, ft-lb/mn,  ft-lb/s, watts,
     kilowatts, BTU/hr and BTU/mn.
-    
+
     The incoming value is first converted to hp, then it is converted to the
     desired return value.
     The units default to those specified in default_units.py
-    
+
     """
 
     if from_units == 'hp':
@@ -285,7 +294,9 @@ def power_conv(P, from_units=default_power_units,
     # elif from_units == 'BTU/mn':
     #     P /= 42.407227
     else:
-        raise ValueError('from_units must be "hp", "ft-lb/mn", "ft-lb/s", "W" (watts), "kW" (kilowatts), "BTU/hr", or "BTU/mn".')
+        raise ValueError(
+            'from_units must be "hp", "ft-lb/mn", "ft-lb/s", "W" (watts), '
+            '"kW" (kilowatts), "BTU/hr", or "BTU/mn".')
 
     if to_units == 'hp':
         return P
@@ -302,23 +313,25 @@ def power_conv(P, from_units=default_power_units,
     # elif to_units == 'BTU/mn':
     #     return P * 42.407227
     else:
-        raise ValueError('to_units must be "hp", "ft-lb/mn", "ft-lb/s", "W" (watts), "kW" (kilowatts), "BTU/hr", or "BTU/mn".')
+        raise ValueError(
+            'to_units must be "hp", "ft-lb/mn", "ft-lb/s", "W" (watts), '
+            '"kW" (kilowatts), "BTU/hr", or "BTU/mn".')
 
 
 def press_conv(P, from_units=default_press_units,
                to_units=default_press_units):
-    """ 
+    """
     Convert pressure values between inches of HG, mm of HG, psi, lb/ft^2,
-    pa, hpa, mb, inches of water and cm of water (using water density at 
+    pa, hpa, mb, inches of water and cm of water (using water density at
     20 deg C).
 
     The incoming value is first converted to Pa, then it is converted to
     desired return value.
     The units default to those specified in default_units.py
-    
-    
+
+
     Examples:
-    
+
     Convert 1013.25 hpa to default pressure units:
     >>> press_conv(1013.25, from_units = 'hpa')
     29.921331923765198
@@ -326,7 +339,7 @@ def press_conv(P, from_units=default_press_units,
     Convert 29.9213 default pressure units to mm of HG:
     >>> press_conv(29.9213, to_units = 'mm HG')
     760.00128931459176
-    
+
     Convert 2116.22 lb per sq. ft to lb per sq. inch:
     >>> press_conv(2116.22, from_units = 'psf', to_units = 'psi')
     14.695973160069311
@@ -335,7 +348,7 @@ def press_conv(P, from_units=default_press_units,
     if from_units == 'in HG':
         P *= 3386.38  # from NASA Reference Publication 1046 Appendix A28
     elif from_units == 'mm HG':
-        P *= 133.322  # derived from NASA Reference Publication 1046 value of pa to in HG
+        P *= 133.322  # derived from NASA Reference Publication 1046 value of pa to in Hg
     elif from_units == 'psi':
         P *= 6894.752  # from NASA Reference Publication 1046 Appendix A27
     elif from_units == 'psf' or from_units == 'lb/ft**2':
@@ -345,18 +358,20 @@ def press_conv(P, from_units=default_press_units,
     elif from_units == 'pa':
         pass
     elif from_units == 'in H2O':
-        P *= 248.648 #  (using water density at 20 deg C)
+        P *= 248.648  # (using water density at 20 deg C)
     elif from_units == 'cm H2O':
-        P *= 248.648 / 2.54 #  (using water density at 20 deg C)
+        P *= 248.648 / 2.54  # (using water density at 20 deg C)
     else:
-        raise ValueError('from_units must be "in HG", "mm HG", "psi", "psf" (lb per sq. ft), "hpa", "mb", "pa", "in H2O" or, "cm H2O".')
+        raise ValueError('from_units must be "in HG", "mm HG", "psi", '
+                         '"psf" (lb per sq. ft), "hpa", "mb", "pa", '
+                         '"in H2O" or, "cm H2O".')
 
     if to_units == 'in HG':
-        return P / 3386.38 # from NASA Reference Publication 1046 Appendix A28
+        return P / 3386.38  # from NASA Reference Publication 1046 Appendix A28
     elif to_units == 'mm HG':
-        return P / 133.322 # derived from NASA Reference Publication 1046 value of pa to in HG
+        return P / 133.322  # derived from NASA Reference Publication 1046 value of pa to in HG
     elif to_units == 'psi':
-        return P / 6894.752 # from NASA Reference Publication 1046 Appendix A27
+        return P / 6894.752  # from NASA Reference Publication 1046 Appendix A27
     elif to_units == 'psf' or to_units == 'lb/ft**2':
         return P / 47.88026  # from NASA Reference Publication 1046 Appendix A27
     elif to_units == 'hpa' or to_units == 'mb':
@@ -364,25 +379,27 @@ def press_conv(P, from_units=default_press_units,
     elif to_units == 'pa':
         return P
     elif to_units == 'in H2O':
-       return P / 248.648 #  (using water density at 20 deg C)
+        return P / 248.648  # (using water density at 20 deg C)
     elif to_units == 'cm H2O':
-       return P / (248.648 / 2.54) #  (using water density at 20 deg C)
+        return P / (248.648 / 2.54)  # (using water density at 20 deg C)
     else:
-        raise ValueError('from_units must be "in HG", "mm HG", "psi", "psf" (lb per sq. ft), "hpa", "mb", "pa", or "in H2O", or "cm H2O".')
+        raise ValueError(
+            'from_units must be "in HG", "mm HG", "psi", "psf" '
+            '(lb per sq. ft), "hpa", "mb", "pa", or "in H2O", or "cm H2O".')
 
 
 def speed_conv(S, from_units=default_speed_units,
                to_units=default_speed_units):
-    """ 
+    """
     Convert speed values between kt, mph, km/h, m/s, ft/mn and ft/s.
 
     The incoming value is first converted to kt, then it is converted to
     desired return value.
     The units default to those specified in default_units.py
-    
-    
+
+
     Example:
-    
+
     Convert 230 mph  to kt:
     >>> speed_conv(230, from_units = 'mph', to_units = 'kt')
     199.86453563714903
@@ -399,12 +416,13 @@ def speed_conv(S, from_units=default_speed_units,
         S *= length_conv(1, from_units='m', to_units='nm') * 3600.
     elif from_units == 'ft/s':
         S *= length_conv(1, from_units=default_length_units, to_units='nm')\
-             * 3600.
+            * 3600.
     elif from_units == 'ft/mn':
         S *= length_conv(1, from_units=default_length_units, to_units='nm')\
             * 60.
     else:
-        raise ValueError('from_units must be one of "kt", "mph", "km/h", "m/s", "ft/mn" and "ft/s".')
+        raise ValueError('from_units must be one of "kt", "mph", "km/h", '
+                         '"m/s", "ft/mn" and "ft/s".')
 
     if to_units == 'kt':
         return S
@@ -424,24 +442,25 @@ def speed_conv(S, from_units=default_speed_units,
         S *= length_conv(1, from_units='nm', to_units=default_length_units)
         return S / 60.
     else:
-        raise ValueError('to_units must be one of "kt", "mph", "km/h", "m/s", "ft/mn" and "ft/s".')
+        raise ValueError('to_units must be one of "kt", "mph", "km/h",'
+                         ' "m/s", "ft/mn" and "ft/s".')
 
 
 def temp_conv(T, from_units=default_temp_units,
               to_units=default_temp_units):
-    """ 
+    """
     Convert absolute temperature values between deg C, F, K and R.
-    
+
     This function should not be used for relative temperature conversions,
     i.e. temperature differences.
-    
+
     The incoming value is first converted to deg K, then it is converted to
     desired return value.
     The units default to those specified in default_units.py
-    
-    
+
+
     Examples:
-    
+
     Convert 32 deg F to deg C, with deg C as the default units:
     >>> temp_conv(32, from_units = 'F')
     0.0
@@ -480,8 +499,9 @@ def temp_conv(T, from_units=default_temp_units,
 
 def vol_conv(V, from_units=default_vol_units,
              to_units=default_vol_units):
-    """ 
-    Convert volume values between USG, ImpGal (Imperial gallons), l (litres), ft**3, in**3, m**3, km**3, sm**3 and nm**3.
+    """
+    Convert volume values between USG, ImpGal (Imperial gallons), l (litres),
+    ft**3, in**3, m**3, km**3, sm**3 and nm**3.
 
     The incoming value is first converted to ft**3, then it is converted to
     desired return value.
@@ -491,12 +511,12 @@ def vol_conv(V, from_units=default_vol_units,
 
     Examples:
 
-    Convert 1 cubic foot to US gallons, with cubic feet already defined as 
+    Convert 1 cubic foot to US gallons, with cubic feet already defined as
     the default units:
     >>> vol_conv(1, to_units = 'USG')
     7.4805194804946105
 
-    Convert 1 Imperial gallon to cubic feet, with cubic feet already defined 
+    Convert 1 Imperial gallon to cubic feet, with cubic feet already defined
     as the default units:
     >>> vol_conv(1, from_units = 'ImpGal')
     0.16054365323600001
@@ -525,7 +545,10 @@ def vol_conv(V, from_units=default_vol_units,
     elif from_units == 'l':
         V /= 3.048 ** 3
     else:
-        raise ValueError('from_units must be "ft**3", "in**3", "USG", "ImpGal", "l", "m**3", "km**3", "sm**3" (cubic statute miles) or "nm**3" (cubic nautical miles).')
+        raise ValueError(
+            'from_units must be "ft**3", "in**3", "USG", "ImpGal", "l", '
+            '"m**3", "km**3", "sm**3" (cubic statute miles) or '
+            '"nm**3" (cubic nautical miles).')
 
     if to_units == 'ft**3':
         return V
@@ -546,26 +569,30 @@ def vol_conv(V, from_units=default_vol_units,
     elif to_units == 'l':
         return V * 3.048 ** 3
     else:
-        raise ValueError('to_units must be "ft**3", "in**3", "USG", "ImpGal", "l", "m**3", "km**3", "sm**3" (cubic statute miles) or "nm**3" (cubic nautical miles).')
+        raise ValueError(
+            'to_units must be "ft**3", "in**3", "USG", "ImpGal", "l", '
+            '"m**3", "km**3", "sm**3" (cubic statute miles) or '
+            '"nm**3" (cubic nautical miles).')
 
 
-def wt_conv(W,from_units=default_weight_units,
+def wt_conv(W, from_units=default_weight_units,
             to_units=default_weight_units):
     """
     Deprecated.  Use mass_conv instead.
     """
-    return mass_conv(W,from_units, to_units)
+    return mass_conv(W, from_units, to_units)
+
 
 def mass_conv(M, from_units=default_weight_units,
-            to_units=default_weight_units):
+              to_units=default_weight_units):
     """
     Convert mass values between lb and kg.
-    
+
     The incoming value is first converted to kg, then it is converted to the
     desired return value.
 
-    The units default to those specified in default_units.py    
-    
+    The units default to those specified in default_units.py
+
     """
 
     if from_units == 'kg':
@@ -592,15 +619,15 @@ def avgas_conv(
     temp=15,
     temp_units='C',
     grade='nominal',
-    ):
+):
     """
-    Convert aviation gasoline between units of lb, US Gallon (USG), 
+    Convert aviation gasoline between units of lb, US Gallon (USG),
     Imperial Gallon (ImpGal), litres (l) and kg, assuming nominal
     density for aviation gasoline of 6.01 lb per USG.
 
     The units default to those specified in default_units.py
-    
-    Note: it was difficult to find authoritative values for aviation gasoline 
+
+    Note: it was difficult to find authoritative values for aviation gasoline
     density.  Conventional wisdom is that aviation gasoline has a density of
     6 lb/USG.  The Canada Flight Supplement provides densities of:
     temp      density     density    density
@@ -612,48 +639,53 @@ def avgas_conv(
      30         5.90       7.07       1.56
 
     However, the Canada Flight Supplement does not provide a source for its
-    density data.  And, the values for the different volume units are not 
+    density data.  And, the values for the different volume units are not
     completely consistent, as they don't vary by exactly the correct factor.
-    For example, if the density at 15 deg C is 6.01 lb/USG, we would expect 
-    the density in lb/ImpGal to be 7.22, (given that 1 ImpGal = 1.201 USG) 
+    For example, if the density at 15 deg C is 6.01 lb/USG, we would expect
+    the density in lb/ImpGal to be 7.22, (given that 1 ImpGal = 1.201 USG)
     yet the Canada Flight Supplement has 7.20.
-    
+
     The only authoritative source for aviation gasoline density that was
-    found on the web was the 'Air BP Handbook of Products' on the British 
+    found on the web was the 'Air BP Handbook of Products' on the British
     Petroleum (BP) web site:
-    
+
     <http://www.bp.com/liveassets/bp_internet/aviation/air_bp/STAGING/local_assets/downloads_pdfs/a/air_bp_products_handbook_04004_1.pdf>
-    
+
     It provides the following density data valid at 15 deg C (the BP document
-    only provides density in kg/m**3 - the density in lb/USG were calculated 
+    only provides density in kg/m**3 - the density in lb/USG were calculated
     by Kevin Horton):
     Avgas    density     density
     Type    (kg/m**3)    (lb/USG)
     80       690          5.76
     100      695          5.80
     100LL    715          5.97
-    
-    The available aviation gasoline specifications do not appear to define an 
-    allowable density range.  They do define allowable ranges for various 
-    parametres of the distillation process - the density of the final product 
+
+    The available aviation gasoline specifications do not appear to define an
+    allowable density range.  They do define allowable ranges for various
+    parametres of the distillation process - the density of the final product
     will vary depending on where in the allowable range the refinery is run.
     Thus there will be some variation in density from refinery to refinery.
-    
+
     This function uses the 15 deg C density values provided by BP, with the
     variation with temperature provided in the Canada Flight Supplement.
-    
-    The grade may be specified as '80', '100' or '100LL'.  It defaults to 
+
+    The grade may be specified as '80', '100' or '100LL'.  It defaults to
     '100LL' if it is not specified.
-    
+
     The temperature defaults to 15 deg C if it is not specified.
     """
 
-    lb_per_USG_15_nom = 6.01  # nominal density at 15 deg C from Canada Flight Supplement
-    slope = -0.007256  # change in density per deg C based on data from Canada Flight Supplement
+    # nominal density at 15 deg C from Canada Flight Supplement
+    lb_per_USG_15_nom = 6.01
 
-    lb_per_USG = lb_per_USG_15_nom * (1 + (slope * (temp_conv(temp,
-            from_units=temp_units, to_units='C') - 15))
-             / lb_per_USG_15_nom)  # density corrected for temperature, using nominal density value
+    # change in density per deg C based on data from Canada Flight Supplement
+    slope = -0.007256
+
+    temp_offset = temp_conv(temp, from_units=temp_units, to_units='C') - 15
+
+    # NOTE: density corrected for temperature, using nominal density value
+    lb_per_USG = (lb_per_USG_15_nom *
+                  (1 + (slope * temp_offset) / lb_per_USG_15_nom))
 
     if grade == 'nominal':
         grade_density = lb_per_USG_15_nom
@@ -664,7 +696,9 @@ def avgas_conv(
     elif str(grade) == '80':
         grade_density = 5.7583
     else:
-        raise ValueError('grade must be one of "nominal", "80", "100" or "100LL", with a default of "100LL"')
+        raise ValueError(
+            'grade must be one of "nominal", "80", "100" or "100LL", '
+            'with a default of "100LL"')
 
     # Correct the density if the grade is other than nominal.
     # If the grade actually is nominal, we are multiplying by 1 / 1
@@ -682,7 +716,8 @@ def avgas_conv(
     elif from_units == 'l':
         AG *= vol_conv(lb_per_USG, from_units='l', to_units='USG')
     else:
-        raise ValueError('from_units must be one of "lb", "USG", "ImpGal", "l", or "kg".')
+        raise ValueError(
+            'from_units must be one of "lb", "USG", "ImpGal", "l", or "kg".')
 
     if to_units == 'lb':
         pass
@@ -695,12 +730,15 @@ def avgas_conv(
     elif to_units == 'l':
         AG /= vol_conv(lb_per_USG, from_units='l', to_units='USG')
     else:
-        raise ValueError('from_units must be one of "lb", "USG", "ImpGal", "l", or "kg".')
+        raise ValueError(
+            'from_units must be one of "lb", "USG", "ImpGal", "l", or "kg".')
 
     return AG
 
-def dynamic_viscosity_conv(u, from_units=default_dynamic_viscosity_units, to_units=default_dynamic_viscosity_units):
-    
+
+def dynamic_viscosity_conv(u, from_units=default_dynamic_viscosity_units,
+                           to_units=default_dynamic_viscosity_units):
+
     if from_units == 'Pa s':
         pass
     elif from_units == 'N s/m**2':
@@ -708,10 +746,11 @@ def dynamic_viscosity_conv(u, from_units=default_dynamic_viscosity_units, to_uni
     elif from_units == 'poise':
         u /= 10.
     elif from_units == 'centipoise':
-        u /= 1000.    
+        u /= 1000.
     else:
-        raise ValueError('Units must be one of"Pa s", "N s/m**2", "poise" or "centipoise".')
-    
+        raise ValueError(
+            'Units must be one of"Pa s", "N s/m**2", "poise" or "centipoise".')
+
     if to_units == 'Pa s':
         pass
     elif to_units == 'N s/m**2':
@@ -719,14 +758,17 @@ def dynamic_viscosity_conv(u, from_units=default_dynamic_viscosity_units, to_uni
     elif to_units == 'poise':
         u *= 10.
     elif to_units == 'centipoise':
-        u *= 1000. 
+        u *= 1000.
     else:
-        raise ValueError('Units must be one of"Pa s", "N s/m**2", "poise" or "centipoise".')
-    
+        raise ValueError(
+            'Units must be one of"Pa s", "N s/m**2", "poise" or "centipoise".')
+
     return u
 
-def kinematic_viscosity_conv(v, from_units=default_kinematic_viscosity_units, to_units=default_kinematic_viscosity_units):
-    
+
+def kinematic_viscosity_conv(v, from_units=default_kinematic_viscosity_units,
+                             to_units=default_kinematic_viscosity_units):
+
     if from_units == 'm**2/s':
         pass
     elif from_units == 'stokes':
@@ -734,7 +776,8 @@ def kinematic_viscosity_conv(v, from_units=default_kinematic_viscosity_units, to
     elif from_units == 'centistokes':
         v /= 1000000.
     else:
-        raise ValueError('Units must be one of "m**2/s", "stokes" or "centistokes".')
+        raise ValueError(
+            'Units must be one of "m**2/s", "stokes" or "centistokes".')
 
     if to_units == 'm**2/s':
         pass
@@ -743,8 +786,8 @@ def kinematic_viscosity_conv(v, from_units=default_kinematic_viscosity_units, to
     elif to_units == 'centistokes':
         v *= 1000000.
     else:
-        raise ValueError('Units must be one of "m**2/s", "stokes" or "centistokes".')
-
+        raise ValueError(
+            'Units must be one of "m**2/s", "stokes" or "centistokes".')
 
     return v
 

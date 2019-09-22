@@ -36,10 +36,10 @@
 #
 # #############################################################################
 #
-# To Do: 1. 
+# To Do: 1.
 #
 #
-# Done:  1. 
+# Done:  1.
 #
 # #############################################################################
 """Functions that are applicable to all piston engines.
@@ -61,25 +61,28 @@ except ImportError:
 
 import unit_conversion as U
 
+
 def power_drop_off(sigma, pwr0, C=0.12):
     """
-    Returns power as a function of density ratio, sea level standard day power 
+    Returns power as a function of density ratio, sea level standard day power
     and the Gagg-Farrar power drop-off parametre.
-    
+
     sigma = density ratio
     pwr0  = power at sea level standard day conditions
-    C     = Gagg-Farrar power drop-off parametre = ratio of friction power to 
+    C     = Gagg-Farrar power drop-off parametre = ratio of friction power to
             indicated power at sea level standard day conditions.  Typically
-            about 0.12 for Lycoming and Continental horizontally opposed, 
+            about 0.12 for Lycoming and Continental horizontally opposed,
             direct drive, non-supercharged engines.
     """
-    
-    return pwr0 * (sigma - C) / ( 1 - C)
 
-def BMEP(bhp, rpm, disp, power_units=default_power_units, vol_units=default_vol_units, press_units=default_press_units):
+    return pwr0 * (sigma - C) / (1 - C)
+
+
+def BMEP(bhp, rpm, disp, power_units=default_power_units,
+         vol_units=default_vol_units, press_units=default_press_units):
     """
     Return brake mean effective pressure, given brake power, rpm and displacement.
-    
+
     Rpm is revolutions per minute.
     """
     bhp = U.power_conv(bhp, power_units, 'hp')
@@ -88,10 +91,11 @@ def BMEP(bhp, rpm, disp, power_units=default_power_units, vol_units=default_vol_
 
     return bmep
 
+
 def CR_corr(pwr1, CR1, CR2, K=1.27):
     """
     Returns engine power corrected for change in compression ratio.
-    
+
     pwr1 = Engine power with CR1
     CR1  = Compression ratio for engine that produces pwr1
     CR2  = Compression ratio for which predicted power is returned
@@ -100,6 +104,6 @@ def CR_corr(pwr1, CR1, CR2, K=1.27):
            K = about 1.27 for typical combustion gases, from:
                http://courses.washington.edu/me341/oct22v2.htm
     """
-    pwr2 = pwr1 * (1 - 1./(CR2**(K-1))) / (1 - 1./(CR1**(K-1)))
-    
+    pwr2 = pwr1 * (1 - 1. / (CR2**(K - 1))) / (1 - 1. / (CR1**(K - 1)))
+
     return pwr2

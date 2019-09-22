@@ -34,11 +34,11 @@
 #
 # 0.11   25 Apr 08   Added ssec module (mostly empty yet)
 # 0.12   24 Nov 08   Added cd and cl modules.  Bug fixes in other modules.
-# 0.13   30 Jun 09   * Python 3.0 compatibility.  
+# 0.13   30 Jun 09   * Python 3.0 compatibility.
 #                    * Added airspeed_p3k and val_input_p3k modules to address
-#                      aspects that had no easy solution that was compatible 
+#                      aspects that had no easy solution that was compatible
 #                      with both python 2.5 and python 3.0.
-#                    * Removed "from __future__ import division" statements 
+#                    * Removed "from __future__ import division" statements
 #                      from most files for python 3.0 compatibility (bug in
 #                      python 3.0 causes doctest failures in presence of
 #                      "from __future__ import division" statement).
@@ -57,6 +57,7 @@
 #
 # #############################################################################
 
+from . import airspeed, constants, default_units, std_atm, unit_conversion
 """Various aeronautical engineering calculations
 
 This package contains the following modules:
@@ -64,7 +65,7 @@ This package contains the following modules:
 airspeed        - airspeed conversions and calculations.  Provides interactive
                   mode when run directly, e.g. 'python airspeed.py'
 airspeed_p3k    - Python 3 compatible variant of airspeed module.
-default_units   - defines default units to be used by all modules.  May be 
+default_units   - defines default units to be used by all modules.  May be
                   overridden by a user units file.
 cd              - drag related calculations.
 cl              - lift related calculations.
@@ -82,5 +83,3 @@ E-mail: kevin01 -at- kilohotel.com
 """
 
 VERSION = '0.13.2'
-
-from . import airspeed, constants, default_units, std_atm, unit_conversion
