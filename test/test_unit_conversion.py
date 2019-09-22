@@ -14,8 +14,8 @@ Run this script directly to do all the tests.
 
 import unittest
 import sys
-sys.path[0] = '../'
-import unit_conversion as U
+
+import aerocalc.unit_conversion as U
 
 
 def RE(value, truth):
@@ -463,37 +463,6 @@ class Test_mass_conv(unittest.TestCase):
         self.failUnless(RE(Value, Truth) <= 1e-8)
 
 
-# create test suites
-
-main_suite = unittest.TestSuite()
-suite1 = unittest.makeSuite(Test_area_conv)
-suite2 = unittest.makeSuite(Test_density_conv)
-suite3 = unittest.makeSuite(Test_force_conv)
-suite4 = unittest.makeSuite(Test_length_conv)
-suite5 = unittest.makeSuite(Test_power_conv)
-suite6 = unittest.makeSuite(Test_press_conv)
-suite7 = unittest.makeSuite(Test_speed_conv)
-suite8 = unittest.makeSuite(Test_temp_conv)
-suite9 = unittest.makeSuite(Test_vol_conv)
-suite10 = unittest.makeSuite(Test_wt_conv)
-suite11 = unittest.makeSuite(Test_avgas_conv)
-suite12 = unittest.makeSuite(Test_mass_conv)
-
-# add test suites to main test suite, so all test results are in one block
-
-main_suite.addTest(suite1)
-main_suite.addTest(suite2)
-main_suite.addTest(suite3)
-main_suite.addTest(suite4)
-main_suite.addTest(suite5)
-main_suite.addTest(suite6)
-main_suite.addTest(suite7)
-main_suite.addTest(suite8)
-main_suite.addTest(suite9)
-main_suite.addTest(suite10)
-main_suite.addTest(suite11)
-main_suite.addTest(suite12)
-
 if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=5).run(main_suite)
+    unittest.main(verbosity=5)
 

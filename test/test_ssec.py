@@ -11,10 +11,7 @@ Run this script directly to do all the tests.
 import unittest
 import sys
 
-# It is assumed that ssec.py is in the directory directly above
-
-sys.path.append('../')
-import ssec as SS
+import aerocalc.ssec as SS
 
 
 def RE(value, truth):
@@ -115,47 +112,6 @@ class Test_gps2tas(unittest.TestCase):
         self.failUnless(RE(W3, W3_T) <= 1e-3)
 
 
-# create test suites
-
-main_suite = unittest.TestSuite()
-suite1 = unittest.makeSuite(Test_gps2tas)
-# suite2 = unittest.makeSuite(Test_alt2temp_ratio)
-# suite3 = unittest.makeSuite(Test_alt2press_ratio)
-# suite4 = unittest.makeSuite(Test_alt2press)
-# suite5 = unittest.makeSuite(Test_alt2density_ratio)
-# suite6 = unittest.makeSuite(Test_alt2density)
-# suite7 = unittest.makeSuite(Test_press2alt)
-# suite8 = unittest.makeSuite(Test_press_ratio2alt)
-# suite9 = unittest.makeSuite(Test_density2alt)
-# suite10 = unittest.makeSuite(Test_density_ratio2alt)
-# suite11 = unittest.makeSuite(Test_density_alt)
-# suite12 = unittest.makeSuite(Test_temp2speed_of_sound)
-# suite13 = unittest.makeSuite(Test_temp2isa)
-# suite14 = unittest.makeSuite(Test_isa2temp)
-# suite15 = unittest.makeSuite(Test_pressure_alt)
-# suite16 = unittest.makeSuite(Test_sat_press)
-# suite17 = unittest.makeSuite(Test_density_alt2temp)
-
-# add test suites to main test suite, so all test results are in one block
-
-main_suite.addTest(suite1)
-# main_suite.addTest(suite2)
-# main_suite.addTest(suite3)
-# main_suite.addTest(suite4)
-# main_suite.addTest(suite5)
-# main_suite.addTest(suite6)
-# main_suite.addTest(suite7)
-# main_suite.addTest(suite8)
-# main_suite.addTest(suite9)
-# main_suite.addTest(suite10)
-# main_suite.addTest(suite11)
-# main_suite.addTest(suite12)
-# main_suite.addTest(suite13)
-# main_suite.addTest(suite14)
-# main_suite.addTest(suite15)
-# main_suite.addTest(suite16)
-# main_suite.addTest(suite17)
-
 if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=2).run(main_suite)
+    unittest.main(verbosity=2)
 

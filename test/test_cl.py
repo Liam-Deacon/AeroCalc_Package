@@ -10,7 +10,7 @@ Run this script directly to do all the tests.
 import unittest
 import sys
 
-import cl
+from aerocalc import cl
 
 
 def RE(value, truth):
